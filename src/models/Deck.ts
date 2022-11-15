@@ -1,4 +1,4 @@
-class Deck {
+export class Deck {
     gameType: string;
     cards: string[];
 
@@ -36,11 +36,13 @@ class Deck {
         console.log(this.cards);
     }
 
+    // デッキをリセットする
     resetDeck(gameType: string) {
         this.createCards(gameType);
     }
 
-    drawOne() {
-        return this.cards.shift();
+    // カードを一枚引く
+    drawOne(): string {
+        return String(this.cards.shift());
     }
 }
