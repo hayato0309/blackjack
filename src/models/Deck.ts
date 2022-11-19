@@ -32,8 +32,6 @@ export class Deck {
             this.cards[i] = this.cards[j];
             this.cards[j] = tmp;
         }
-
-        console.log(this.cards);
     }
 
     // デッキをリセットする
