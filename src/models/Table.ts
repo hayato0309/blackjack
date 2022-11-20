@@ -1,12 +1,12 @@
 import { Deck } from "./Deck";
 import { Player } from "./Player";
+import { GameDecision } from "./GameDecision";
 
 export class Table {
     gameType: string;
     betDenomination: number[];
     deck: Deck;
     players: Player[];
-    house: object;
     gamePhase: string;
     resultLog: string[];
 
@@ -20,12 +20,11 @@ export class Table {
         this.players = [];
         if (this.gameType === "blackjack") {
             // blackjackの場合一般のプレイヤーは3人（house: 1, player: 3）
+            this.players.push(new Player('HOUSE', 'house', 'blackjack'));
             this.players.push(new Player('AI1', 'ai', 'blackjack'));
             this.players.push(new Player('AI2', 'ai', 'blackjack'));
             this.players.push(new Player('AI3', 'ai', 'blackjack'));
         }
-
-        this.house = new Player('HOUSE', 'house', 'blackjack');
         this.gamePhase = "betting";
 
         // 各ラウンドの結果をログに記録するための文字列の配列
@@ -37,8 +36,15 @@ export class Table {
         this.players.map((player) => {
             for (let i = 0; i < 2; i++) {
                 player.hand.push(this.deck.drawOne());
-                console.log(player.hand);
             }
+        });
+    }
+
+    // ラウンド開始時に手札と掛け金をリセットする
+    blackjackClearPlayerHandsAndBets(): void {
+        this.players.map((player) => {
+            player.hand = [];
+            player.gameDecision = <GameDecision>{};
         });
     }
 }

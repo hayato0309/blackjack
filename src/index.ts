@@ -4,29 +4,15 @@ import { Player } from './models/Player';
 import { GameDecision } from './models/GameDecision';
 import { Table } from './models/Table';
 
-// player作成の確認
-let players = [];
 
-players.push(new Player('hayato', 'house', 'blackjack'));
-players.push(new Player('henry', 'user', 'blackjack'));
-players.push(new Player('nancy', 'ai', 'blackjack'));
-players.push(new Player('lindy', 'ai', 'blackjack'));
+const table = new Table("blackjack", [5, 20, 50, 100]);
 
-// card作成とシャッフルの確認
-let deck = new Deck('blackjack');
-deck.shuffle();
+table.blackjackAssignPlayerHands();
 
-// playerに2枚ずつカードを配布
-players.map((player) => {
-    for (let i = 0; i < 2; i++) {
-        player.hand.push(deck.drawOne());
-    }
-});
-
-const houseUpcardRank = players[0].hand[0][1];
+const houseUpcardRank = table.players[0].hand[0][1];
 console.log(houseUpcardRank);
 
-players.map((player) => {
+table.players.map((player) => {
     while (player.gameStatus === "betting") {
         if (player.type === "ai") {
             const nextAction = player.aiPlayerNextAction(houseUpcardRank);
@@ -40,14 +26,11 @@ players.map((player) => {
             console.log(`Since ${player.name} is not AI, he/she should decide the next action by yourself😤`);
         }
 
-        player.hand.push(deck.drawOne());
+        player.hand.push(table.deck.drawOne());
         if (player.getHandScore() > 21) {
             player.gameStatus = "bust";
         }
     }
 });
 
-// Tableクラスの挙動確認
-const table = new Table("blackjack", [5, 20, 50, 100]);
-
-table.blackjackAssignPlayerHands();
+table.blackjackClearPlayerHandsAndBets();
