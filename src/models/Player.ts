@@ -7,6 +7,7 @@ export class Player {
     chips: number;
     hand: string[];
     gameStatus: string;
+    gameDecision: GameDecision;
 
     constructor(name: string, type: string, gameType: string, chips: number = 400, gameStatus: string = "betting") {
         this.name = name;
@@ -15,6 +16,7 @@ export class Player {
         this.chips = chips;
         this.hand = [];
         this.gameStatus = gameStatus; // "betting", "bet", "surrender", "stand", "hit", "double", "blackjack", "bust", "broke"
+        this.gameDecision = <GameDecision>{};
     }
 
     // 次にどのようなアクションをとるべきか返す
