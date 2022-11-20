@@ -2,6 +2,7 @@ import { Card } from './models/Card';
 import { Deck } from './models/Deck';
 import { Player } from './models/Player';
 import { GameDecision } from './models/GameDecision';
+import { Table } from './models/Table';
 
 // player作成の確認
 let players = [];
@@ -46,7 +47,7 @@ players.map((player) => {
     }
 });
 
-// playerの手札の合計計算メソッドの確認
-players.map((player) => {
-}
-);
+// Tableクラスの挙動確認
+const table = new Table("blackjack", [5, 20, 50, 100]);
+
+table.blackjackAssignPlayerHands();
