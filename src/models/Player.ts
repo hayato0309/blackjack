@@ -6,26 +6,33 @@ export class Player {
     gameType: string;
     chips: number;
     hand: string[];
-    gameStatus: string;
+    playerStatus: string;
     gameDecision: GameDecision;
 
-    constructor(name: string, type: string, gameType: string, chips: number = 400, gameStatus: string = "betting") {
+    constructor(name: string, type: string, gameType: string, chips: number = 400, playerStatus: string = "betting") {
         this.name = name;
         this.type = type;
         this.gameType = gameType;
         this.chips = chips;
         this.hand = [];
-        this.gameStatus = gameStatus; // "betting", "bet", "surrender", "stand", "hit", "double", "blackjack", "bust", "broke"
+        this.playerStatus = playerStatus; // betting, readyForActing, bust, broke
         this.gameDecision = <GameDecision>{};
     }
 
-    // 次にどのようなアクションをとるべきか返す
-    promptPlayer(): GameDecision {
-        let action = "";
-        let amount = 0;
-        if (this.type === "ai") {
-        }
-        return new GameDecision(action, amount);
+    // userの入力値に従ってgameDecisionを返す
+    userPlayerGameDecision(actionParam: string, amountParam: number): void {
+        const action: string = actionParam;
+        const amount: number = amountParam;
+
+        this.gameDecision = new GameDecision(action, amount);
+    }
+
+    // AIプレイヤーのgameDecisionを返す
+    aiPlayerGameDecision(upCardRank: string, turnCounter: number): void {
+        const action: string = this.aiPlayerNextAction(upCardRank);
+        const amount: number = this.aiPlayerDecideBetAmount(turnCounter);
+
+        this.gameDecision = new GameDecision(action, amount);
     }
 
     // AIプレイヤーの次の手を判断
@@ -83,8 +90,9 @@ export class Player {
     }
 
     // AIプレイヤーの掛け金を決める（5の倍数）
-    aiPlayerDecideBetAmount(): number {
-        if (this.gameStatus === "broke") return 0;
+    aiPlayerDecideBetAmount(turnCounter: number): number {
+        if (this.playerStatus === "broke") return 0;
+        if (turnCounter > 4) return 0; // 2周目に入っている場合は掛け金は0にしておく
 
         let betAmount: number = 0;
         let budgetForOneRound = this.chips / 5; // 1ラウンドの掛け金上限
