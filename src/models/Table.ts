@@ -9,6 +9,7 @@ export class Table {
     players: Player[];
     gamePhase: string;
     resultLog: string[];
+    turnCounter: number;
 
     constructor(gameType: string, betDenomination: number[]) {
         this.gameType = gameType; // e.g. blackjack
@@ -25,10 +26,10 @@ export class Table {
             this.players.push(new Player('AI2', 'ai', 'blackjack'));
             this.players.push(new Player('AI3', 'ai', 'blackjack'));
         }
-        this.gamePhase = "betting";
 
-        // 各ラウンドの結果をログに記録するための文字列の配列
-        this.resultLog = [];
+        this.gamePhase = "betting";
+        this.resultLog = []; // 各ラウンドの結果をログに記録するための文字列の配列
+        this.turnCounter = 0;
     }
 
     // 別途終了後、各プレイヤーに2枚のカードを割り当てる
@@ -46,5 +47,13 @@ export class Table {
             player.hand = [];
             player.gameDecision = <GameDecision>{};
         });
+    }
+
+    // 現在フォーカスしているプレイヤーを返す
+    getTurnPlayer(): Player {
+        this.turnCounter++;
+        const playerIndex = this.turnCounter % this.players.length;
+
+        return this.players[playerIndex];
     }
 }
