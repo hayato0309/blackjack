@@ -29,31 +29,66 @@ export class Player {
     // AIプレイヤーの次の手を判断
     aiPlayerNextAction(upCardRank: string): string {
         let nextAction = "";
-        const handLength = this.hand.length; // 手札の枚数
-        const handScore = this.getHandScore(); // 手札のスコア
-        const upCardScore = this.rankToScore(upCardRank); // houseの一枚だけ表向きのカード
+        const handLength: number = this.hand.length; // 手札の枚数
+        const handScore: number = this.getHandScore(); // 手札のスコア
+        const upCardScore: number | string = this.rankToScore(upCardRank); // houseの一枚だけ表向きのカードのスコア（Aの場合はAをstringとして持つ。A以外の場合はnumber）
 
         if (handLength === 2) {
-            // stand
-            if (handScore >= 17) nextAction = "stand";
-            if (handScore >= 13 && upCardScore <= 6) nextAction = "stand";
-            if (handScore === 12 && upCardScore >= 3 && upCardScore <= 6) nextAction = "stand";
-            // surrender
-            if (handScore === 16 && upCardScore === 10) nextAction = "surrender";
-            if (handScore === 15 && (upCardScore >= 9 || upCardRank === "A")) nextAction = "surrender";
-            // double
-            if (handScore === 11 && upCardRank !== "A") nextAction = "double";
-            if (handScore === 10 && upCardScore >= 9) nextAction = "double";
-            if (handScore === 9 && upCardScore >= 3 && upCardScore <= 6) nextAction = "double";
+            if (upCardScore === "A") {
+                // stand
+                if (handScore === 17) nextAction = "stand";
+                // surrender
+                if (handScore === 16) nextAction = "surrender";
 
-            // もしnextActionが空ストリングだったら、"hit"をアサイン
-            if (nextAction === "") nextAction = "hit";
+                // もしnextActionが空ストリングだったら、"hit"をアサイン
+                if (nextAction === "") nextAction = "hit";
+            } else {
+                // stand
+                if (handScore >= 17) nextAction = "stand";
+                if (handScore >= 13 && handScore <= 16 && upCardScore <= 6) nextAction = "stand";
+                if (handScore === 12 && upCardScore >= 3 && upCardScore <= 6) nextAction = "stand";
+                // surrender
+                if (handScore === 16 && upCardScore === 10) nextAction = "surrender";
+                if (handScore === 15 && upCardScore >= 9) nextAction = "surrender";
+                // double
+                if (handScore === 11) nextAction = "double";
+                if (handScore === 10 && upCardScore >= 9) nextAction = "double";
+                if (handScore === 9 && upCardScore >= 3 && upCardScore <= 6) nextAction = "double";
+
+                // もしnextActionが空ストリングだったら、"hit"をアサイン
+                if (nextAction === "") nextAction = "hit";
+            }
         } else if (handLength >= 3) {
             if (handScore < 17) nextAction = "hit";
             else nextAction = "stand";
         }
 
         return nextAction;
+    }
+
+    // ランクをスコアに変換する（Aが渡された場合はAをそのまま文字列として返す）
+    rankToScore(rank: string): number | string {
+        let score = 0;
+        const face = ["J", "Q", "K"];
+
+        if (rank === "A") return "A";
+        else {
+            if (face.includes(rank)) score = 10;
+            else score = Number(rank);
+        }
+
+        return score;
+    }
+
+    // AIプレイヤーの掛け金を決める（5の倍数）
+    aiPlayerDecideBetAmount(): number {
+        if (this.gameStatus === "broke") return 0;
+
+        let betAmount: number = 0;
+        let budgetForOneRound = this.chips / 5; // 1ラウンドの掛け金上限
+        betAmount = Math.floor((Math.random() * (budgetForOneRound / 5 - 5) + 5)) * 5;
+
+        return betAmount;
     }
 
     // AIプレイヤーがサレンダーする確率の計算（現状5％の確率でサレンダーする）
@@ -93,19 +128,5 @@ export class Player {
         }
 
         return sum;
-    }
-
-    // ランクをスコアに変換する（Aが渡された場合は例外としてエラーを返す）
-    rankToScore(rank: string): number {
-        let score = 0;
-        const face = ["J", "Q", "K"];
-
-        if (rank === "A") throw new Error("'A' cannot be converted to score(number) with rankToScore()!");
-        else {
-            if (face.includes(rank)) score = 10;
-            else score = Number(rank);
-        }
-
-        return score;
     }
 }

@@ -22,17 +22,19 @@ players.map((player) => {
     }
 });
 
+const houseUpcardRank = players[0].hand[0][1];
+console.log(houseUpcardRank);
+
 players.map((player) => {
     while (player.gameStatus === "betting") {
         if (player.type === "ai") {
-            console.log(player.name, player.getHandScore());
-            console.log(player.aiPlayerNextAction("4"));
+            const nextAction = player.aiPlayerNextAction(houseUpcardRank);
+            const betAmount = player.aiPlayerDecideBetAmount();
 
-            const nextAction = player.aiPlayerNextAction("4");
-            const [action, amount] = [nextAction, 100];
+            const [action, amount] = [nextAction, betAmount];
             const gameDecision = new GameDecision(action, amount);
-
             console.log(gameDecision);
+
         } else if (player.type === "user") {
             console.log(`Since ${player.name} is not AI, he/she should decide the next action by yourself😤`);
         }
