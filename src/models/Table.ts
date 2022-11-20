@@ -4,8 +4,8 @@ import { Player } from "./Player";
 export class Table {
     gameType: string;
     betDenomination: number[];
-    deck: object;
-    players: object[];
+    deck: Deck;
+    players: Player[];
     house: object;
     gamePhase: string;
     resultLog: string[];
@@ -13,8 +13,8 @@ export class Table {
     constructor(gameType: string, betDenomination: number[]) {
         this.gameType = gameType; // e.g. blackjack
         this.betDenomination = betDenomination; // e.g. [5, 20, 50, 100]
-        this.deck = [];
         this.deck = new Deck(this.gameType);
+        this.deck.shuffle();
 
         // プレイヤーの初期化（※一旦全員AIで実装）
         this.players = [];
@@ -32,25 +32,13 @@ export class Table {
         this.resultLog = [];
     }
 
-    /**
-     * Player.promptPlayer()を使用してGameDecisionを取得し、GameDecisionとgameTypeに応じてPlayerの状態を更新
-     * 
-     * @param player 
-     * @return null
-     */
-    // evaluateMove(player: Player): void {
-    //     // EX:
-    //     // プレイヤーが「ヒット」し、手札が21以上の場合、gameStatusを「バスト」に設定し、チップからベットを引きます。
-    //     const playerAction = player.promptPlayer();
-
-    //     if (player.getHandScore() > 21) {
-
-    //     } else {
-
-    //     }
-    // }
-
-    // turnCounter(): number {
-
-    // }
+    // 別途終了後、各プレイヤーに2枚のカードを割り当てる
+    blackjackAssignPlayerHands(): void {
+        this.players.map((player) => {
+            for (let i = 0; i < 2; i++) {
+                player.hand.push(this.deck.drawOne());
+                console.log(player.hand);
+            }
+        });
+    }
 }
