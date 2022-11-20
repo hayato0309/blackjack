@@ -27,7 +27,7 @@ export class Table {
             this.players.push(new Player('AI3', 'ai', 'blackjack'));
         }
 
-        this.gamePhase = "betting";
+        this.gamePhase = "betting"; // betting, acting, roundOver
         this.resultLog = []; // 各ラウンドの結果をログに記録するための文字列の配列
         this.turnCounter = 0;
     }
@@ -55,5 +55,52 @@ export class Table {
         const playerIndex = this.turnCounter % this.players.length;
 
         return this.players[playerIndex];
+    }
+
+    // Userプレイヤーに次のアクションと掛け金の決定を促す
+    promptNextUserActionAndBet(player: Player, actionParam: string, amountParam: number): void {
+        player.userPlayerGameDecision(actionParam, amountParam);
+    }
+
+    // AIプレイヤーに次のアクションと掛け金の決定を促す
+    promptNextAiActionAndBet(player: Player, upCardRank: string, turnCounter: number): void {
+        player.aiPlayerGameDecision(upCardRank, turnCounter);
+    }
+
+    // gameDecisionに応じてプレイヤーの手札・playerStatus・チップを更新する
+    // 全てのプレイヤーのplayerStatusがroundOverになるまで繰り返し実行される
+    executeGameDecision(player: Player): void {
+        if (player.gameDecision.action === "stand") {
+            // 掛け金をchipsから引き、ラウンドを終了する
+            player.chips -= player.gameDecision.amount;
+            player.playerStatus = "readyForActing";
+        } else if (player.gameDecision.action === "hit") {
+            // 掛け金をchipsから引き、もう一枚カードを引く
+            player.chips -= player.gameDecision.amount;
+            player.hand.push(this.deck.drawOne());
+        } else if (player.gameDecision.action === "double") {
+            // 掛け金の2倍をchipsから引き、もう一枚カードを引く
+            player.chips -= (player.gameDecision.amount * 2);
+            player.hand.push(this.deck.drawOne());
+        } else if (player.gameDecision.action === "surrender") {
+            // 掛け金の半分をchipsから引き、ラウンドを終了する
+            player.chips -= (player.gameDecision.amount / 2);
+            player.playerStatus = "readyForActing";
+        }
+    }
+
+    // プレイヤーがbustか判定
+    checkIfPlayerIsBust(player: Player): void {
+        if (player.getHandScore() > 21) player.playerStatus = "bust";
+    }
+
+    // 全てのプレイヤーがbettingを終了しているか判定
+    checkIfReadyForActing(): void {
+        let doneBettingCounter = 0;
+        this.players.map((player) => {
+            if (player.playerStatus !== "betting") doneBettingCounter++;
+        });
+
+        if (doneBettingCounter === 4) this.gamePhase = "acting";
     }
 }
