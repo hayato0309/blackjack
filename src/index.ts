@@ -11,7 +11,7 @@ table.blackjackAssignPlayerHands();
 
 const house = table.players[0];
 
-const houseUpCardRank = table.players[0].hand[0][1];
+const houseUpCardRank = table.players[0].hand[0].slice(1);
 
 while (table.gamePhase === "betting") {
     const currPlayer = table.getTurnPlayer();
