@@ -1,6 +1,6 @@
 import { Deck } from "./Deck";
 import { Player } from "./Player";
-import { GameDecision } from "./GameDecision";
+import type { GameDecision } from "./GameDecision";
 
 export class Table {
     gameType: string;
