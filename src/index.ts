@@ -39,6 +39,7 @@ table.players.map((player) => {
   console.log(player);
 })
 
-table.blackjackClearPlayerHandsAndBets();
+// table.blackjackClearPlayerHandsAndBets();
 
-Controller.displayGameSelectPage();
+// Controller.displayGameSelectPage();
+Controller.displayGamePage(table.players);
