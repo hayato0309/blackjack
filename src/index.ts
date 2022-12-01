@@ -1,9 +1,6 @@
-import { Card } from './models/Card';
-import { Deck } from './models/Deck';
-import { Player } from './models/Player';
-import { GameDecision } from './models/GameDecision';
 import { Table } from './models/Table';
 import { Controller } from './controllers/blackjack';
+import { GameSelectPage } from './views/blackjack/pages/gameSelect';
 
 
 const table = new Table("blackjack", [1, 5, 20, 50, 100]);
@@ -43,4 +40,5 @@ table.players.map((player) => {
 
 // Controller.displayGameSelectPage();
 Controller.displayGamePage(table.players);
-Controller.displayGameResultModal();
+
+// Controller.displayGameResultModal();

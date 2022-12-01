@@ -1,18 +1,18 @@
-import { Card } from './../models/Card';
 import type { Player } from '../models/Player';
-import { PageView } from '../views/blackjack';
+import { GameSelectPage } from '../views/blackjack/pages/gameSelect';
+import { GameBoard } from '../views/blackjack/pages/gameBoard';
 import { CardView } from '../views/card';
-import { GameResultModal } from '../views/modals/gameResult';
+import { GameResultModal } from '../views/blackjack/gameResult';
 
 export class Controller {
     static CONTAINER = document.getElementById("container")!;
 
     static displayGameSelectPage() {
-        this.CONTAINER.innerHTML = PageView.createGameSelectPage();
+        this.CONTAINER.innerHTML = GameSelectPage.createGameSelectPage();
     }
 
     static displayGamePage(players: Player[]) {
-        this.CONTAINER.innerHTML = PageView.createGamePage("Hayato");
+        this.CONTAINER.innerHTML = GameBoard.createGameBoardPage("Hayato");
 
         const cardContainers = Array.from(document.querySelectorAll(".card-container"));
 
