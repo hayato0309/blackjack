@@ -2,6 +2,7 @@ import { Card } from './../models/Card';
 import type { Player } from '../models/Player';
 import { PageView } from '../views/blackjack';
 import { CardView } from '../views/card';
+import { GameResultModal } from '../views/modals/gameResult';
 
 export class Controller {
     static CONTAINER = document.getElementById("container")!;
@@ -21,15 +22,12 @@ export class Controller {
                 if (i === 0 && index !== 0) cards += CardView.createReversedCard();
                 else cards += CardView.createCard(card);
             });
-            // for (let j = 0; j < players[i].hand.length; j++) {
-            //     console.log(i);
-            //     console.log(j);
-
-            //     if (i === 0 && j !== 0) cards += CardView.createCard(players[i].hand[j], true);
-            //     else cards += CardView.createCard(players[i].hand[j]);
-            // }
 
             cardContainers[i].innerHTML = cards;
         }
+    }
+
+    static displayGameResultModal() {
+        this.CONTAINER.appendChild(GameResultModal.createGameResultModal());
     }
 }

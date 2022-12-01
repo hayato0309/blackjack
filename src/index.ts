@@ -43,3 +43,4 @@ table.players.map((player) => {
 
 // Controller.displayGameSelectPage();
 Controller.displayGamePage(table.players);
+Controller.displayGameResultModal();
