@@ -1,9 +1,9 @@
 import { Table } from './models/Table';
 import { Controller } from './controllers/blackjack';
-import { GameSelectPage } from './views/blackjack/pages/gameSelect';
+import { GameSettingPage } from './views/blackjack/pages/gameSetting';
 
 
-const table = new Table("blackjack", [1, 5, 20, 50, 100]);
+const table = new Table("blackjack", "test123", [1, 5, 20, 50, 100], "fast");
 
 table.blackjackAssignPlayerHands();
 
@@ -38,7 +38,16 @@ table.players.map((player) => {
 
 // table.blackjackClearPlayerHandsAndBets();
 
-// Controller.displayGameSelectPage();
-Controller.displayGamePage(table.players);
+
+// gameSettingページを表示
+Controller.displayGameSettingPage();
+
+// gameSettinページの入力値をもとにゲームを開始
+const gameSettingForm = <HTMLFormElement>document.querySelector("#gameSettingForm");
+gameSettingForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  Controller.startBlackjack();
+});
+
 
 // Controller.displayGameResultModal();
