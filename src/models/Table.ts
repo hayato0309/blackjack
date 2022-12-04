@@ -10,26 +10,28 @@ export class Table {
     gamePhase: string;
     resultLog: string[];
     turnCounter: number;
+    computerPlayerSpeed: string;
 
-    constructor(gameType: string, betDenomination: number[]) {
+    constructor(gameType: string, userName: string, betDenomination: number[], computerPlayerSpeed: string) {
         this.gameType = gameType; // e.g. blackjack
-        this.betDenomination = betDenomination; // e.g. [5, 20, 50, 100]
+        this.betDenomination = betDenomination; // e.g. [1, 5, 20, 50, 100]
         this.deck = new Deck(this.gameType);
         this.deck.shuffle();
 
-        // プレイヤーの初期化（※一旦全員AIで実装）
+        // プレイヤーの初期化
         this.players = [];
         if (this.gameType === "blackjack") {
             // blackjackの場合一般のプレイヤーは3人（house: 1, player: 3）
             this.players.push(new Player('HOUSE', 'house', 'blackjack'));
-            this.players.push(new Player('AI1', 'ai', 'blackjack'));
-            this.players.push(new Player('AI2', 'ai', 'blackjack'));
-            this.players.push(new Player('AI3', 'ai', 'blackjack'));
+            this.players.push(new Player('Ninja🥷', 'ai', 'blackjack'));
+            this.players.push(new Player(userName, 'user', 'blackjack'));
+            this.players.push(new Player('Max🐶', 'ai', 'blackjack'));
         }
 
         this.gamePhase = "betting"; // betting, acting, roundOver
         this.resultLog = []; // 各ラウンドの結果をログに記録するための文字列の配列
         this.turnCounter = 0;
+        this.computerPlayerSpeed = computerPlayerSpeed;
     }
 
     // 別途終了後、各プレイヤーに2枚のカードを割り当てる
