@@ -9,6 +9,7 @@ export class GameBoardPage {
                 <div class="flex h-1/3 p-2">
                     <div class="scale-75" style="width: 30%">
                         <div class="text-center text-xl font-bold tracking-wider">${players[1].name}</div>
+                        <div class="text-center text-xl font-bold">$${players[1].chips}-</div>
                         <div class="flex justify-center items-center h-full card-container"></div>
                     </div>
                     <div class="rounded-lg bg-white/60 p-3"style="width: 40%">
@@ -18,6 +19,7 @@ export class GameBoardPage {
                     </div>
                     <div class="scale-75 p-0" style="width: 30%">
                         <div class="text-center text-xl font-bold tracking-wider">${players[3].name}</div>
+                        <div class="text-center text-xl font-bold">$${players[3].chips}-</div>
                         <div class="flex justify-center items-center h-full card-container"> 
                         </div>
                     </div>
