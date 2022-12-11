@@ -1,6 +1,10 @@
+import { CONTAINER } from "../../../config/config";
+import type { Table } from "../../../models/Table";
+import { Controller } from "../../../controllers/blackjack";
+
 export class GameSettingPage {
-    static createGameSettingPage(): string {
-        return (`
+    static createGameSettingPage(table: Table): void {
+        CONTAINER.innerHTML = `
             <div class="flex justify-center items-center h-screen w-screen">
                 <div class="w-6/12 rounded-lg bg-white shadow-lg flex">
                     <div class="w-5/12 bg-sky-300 rounded-l-lg">image</div>
@@ -42,6 +46,12 @@ export class GameSettingPage {
                     </div>
                 </div>    
             </div>
-        `);
+        `;
+
+        const gameSettingForm = <HTMLFormElement>document.querySelector("#gameSettingForm");
+        gameSettingForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            Controller.startBlackjack(table);
+        });
     }
 }
