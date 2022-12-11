@@ -44,8 +44,21 @@ export class Table {
         this.computerPlayerSpeed = computerPlayerSpeed;
     }
 
+    setDeck(deck: Deck): void {
+        this.deck = deck;
+    }
+
     setGamePhase(gamePhase: string): void {
         this.gamePhase = gamePhase;
+    }
+
+    // getter
+    getGameType(): string {
+        return this.gameType;
+    }
+
+    getGamePhase(): string {
+        return this.gamePhase;
     }
 
     // 別途終了後、各プレイヤーに2枚のカードを割り当てる

@@ -1,3 +1,5 @@
+import { Table } from './../models/Table';
+import { Deck } from './../models/Deck';
 import { CONTAINER } from '../config/config';
 import type { Table } from '../models/Table';
 import type { Player } from '../models/Player';
@@ -23,26 +25,15 @@ export class Controller {
         table.setPlayers(userName);
         table.setComputerPlayerSpeed(computerPlayerSpeed);
 
+        // deckを作成
+        const deck = new Deck(table.getGameType());
+        deck.shuffle();
+        table.setDeck(deck);
+
         // 手札2枚ずつを配る
         table.blackjackAssignPlayerHands();
         // GameBoardページのUI作成
         GameBoardPage.createGameBoardPage(table);
-        // カードのUI作成
-        const cardContainers = Array.from(document.querySelectorAll(".card-container"));
-        for (let i = 0; i < cardContainers.length; i++) {
-            let cards: string = "";
-            table.players[i].hand.map((card, index) => {
-                // gamePhaseがbettingの時は全てのカードは伏せた状態
-                if (table.gamePhase === "betting") cards += CardView.createReversedCard();
-                // else {
-                //     // bettingが終わるとhouseは1枚だけ表向き。その他playerは全てのカードが表向き
-                //     if (i === 0 && index !== 0) cards += CardView.createReversedCard();
-                //     else cards += CardView.createCard(card);
-                // }
-            });
-
-            cardContainers[i].innerHTML = cards;
-        }
     }
 
     static bettingPhase(table: Table) {
@@ -60,6 +51,17 @@ export class Controller {
                 player.setChips(player.getChips() - player.gameDecision.amount);
             }
         });
+
+        this.setActingPhase(table);
+    }
+
+    static setActingPhase(table: Table) {
+        table.setGamePhase("acting");
+        this.actingPhase(table);
+    }
+
+    static actingPhase(table: Table): void {
+        GameBoardPage.createGameBoardPage(table);
     }
 
     static displayGameResultModal() {
