@@ -40,35 +40,10 @@ import { GameDecision } from './models/GameDecision';
 // table.blackjackClearPlayerHandsAndBets();
 
 
-// gameSettingページを表示
-Controller.displayGameSettingPage();
-
 // Tableインスタンス作成
 let table = new Table();
 
-// ゲーム開始
-const gameSettingForm = <HTMLFormElement>document.querySelector("#gameSettingForm");
-gameSettingForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  Controller.startBlackjack(table);
-});
-
-// // betting：掛け金がSubmitされたら以下を実行
-// const betAmountForm = <HTMLFormElement>document.querySelector("#betAmountForm");
-// betAmountForm.addEventListener("submit", (e) => {
-//   e.preventDefault();
-
-//   table.players.map((player) => {
-//     if (player.type === "house") {
-//       // houseは賭ける必要が無いので何もしない
-//     } else if (player.type === "ai") {
-//       player.setGameDecision(new GameDecision("bet", player.aiPlayerDecideBetAmount()));
-//     } else if (player.type === "user") {
-//       const userBetAmount = Number((<HTMLInputElement>document.querySelector("#betAmountInput")).value);
-//       player.setGameDecision(new GameDecision("bet", userBetAmount));
-//     }
-//   })
-// });
-
+// gameSettingページを表示
+Controller.displayGameSettingPage(table);
 
 // Controller.displayGameResultModal();

@@ -8,8 +8,8 @@ import { GameResultModal } from '../views/blackjack/modals/gameResult';
 import { GameDecision } from '../models/GameDecision';
 
 export class Controller {
-    static displayGameSettingPage() {
-        CONTAINER.innerHTML = GameSettingPage.createGameSettingPage();
+    static displayGameSettingPage(table: Table) {
+        GameSettingPage.createGameSettingPage(table);
     }
 
     static startBlackjack(table: Table) {
