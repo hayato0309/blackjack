@@ -1,6 +1,7 @@
 import { CONTAINER } from "../../../config/config";
 import type { Table } from "../../../models/Table";
 import { Controller } from "../../../controllers/blackjack";
+import { CardView } from "../../../views/card";
 
 export class GameBoardPage {
     static createGameBoardPage(table: Table): void {
@@ -49,6 +50,23 @@ export class GameBoardPage {
                 </div>
             </div>
         `;
+
+        // カードのUI作成
+        const cardContainers = Array.from(document.querySelectorAll(".card-container"));
+        for (let i = 0; i < cardContainers.length; i++) {
+            let cards: string = "";
+            table.players[i].hand.map((card, index) => {
+                // gamePhaseがbettingの時は全てのカードは伏せた状態
+                if (table.getGamePhase() === "betting") cards += CardView.createReversedCard();
+                else if (table.getGamePhase() === "acting") {
+                    // bettingが終わるとhouseは1枚だけ表向き。その他playerは全てのカードが表向き
+                    if (i === 0 && index !== 0) cards += CardView.createReversedCard();
+                    else cards += CardView.createCard(card);
+                }
+            });
+
+            cardContainers[i].innerHTML = cards;
+        }
 
         // 掛け金がSubmitされたら以下を実行
         const betAmountForm = <HTMLFormElement>document.querySelector("#betAmountForm");

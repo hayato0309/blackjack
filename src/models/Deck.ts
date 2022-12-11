@@ -41,6 +41,7 @@ export class Deck {
 
     // カードを一枚引く
     drawOne(): string {
+        console.log("called!!!");
         return String(this.cards.shift());
     }
 }
