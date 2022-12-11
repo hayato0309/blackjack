@@ -6,4 +6,9 @@ export class GameDecision {
         this.action = action; // {'bet', 'surrender', 'stand', 'hit', 'double'}
         this.amount = amount;
     }
+
+    // setter
+    setAmount(amount: number): void {
+        this.amount = amount;
+    }
 }

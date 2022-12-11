@@ -20,17 +20,21 @@ export class Player {
     }
 
     // getter
-    public getChips(): number {
+    getChips(): number {
         return this.chips;
     }
 
     // setter
-    public setChips(chips: number): void {
+    setChips(chips: number): void {
         this.chips = chips;
     }
 
-    public setPlayerStatus(playerStatus: string): void {
+    setPlayerStatus(playerStatus: string): void {
         this.playerStatus = playerStatus;
+    }
+
+    setGameDecision(gameDecision: GameDecision): void {
+        this.gameDecision = gameDecision;
     }
 
     // userの入力値に従ってgameDecisionを返す
