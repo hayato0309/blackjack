@@ -1,3 +1,4 @@
+import { GameBoardPage } from './../views/blackjack/pages/gameBoard';
 import { GameDecision } from './GameDecision';
 
 export class Player {
@@ -15,13 +16,8 @@ export class Player {
         this.gameType = gameType;
         this.chips = chips;
         this.hand = [];
-        this.playerStatus = playerStatus; // betting, readyForActing, bust, broke
+        this.playerStatus = playerStatus; // betting, readyForActing, doneWithActing, bust, broke
         this.gameDecision = <GameDecision>{};
-    }
-
-    // getter
-    getChips(): number {
-        return this.chips;
     }
 
     // setter
@@ -37,35 +33,37 @@ export class Player {
         this.gameDecision = gameDecision;
     }
 
-    // userの入力値に従ってgameDecisionを返す
-    userPlayerGameDecision(actionParam: string, amountParam: number): void {
-        const action: string = actionParam;
-        const amount: number = amountParam;
-
-        this.gameDecision = new GameDecision(action, amount);
+    // getter
+    getName(): string {
+        return this.name;
     }
 
-    // AIプレイヤーのgameDecisionを返す
-    aiPlayerGameDecision(upCardRank: string, turnCounter: number): void {
-        let action: string;
-        let amount: number;
+    getType(): string {
+        return this.type;
+    }
 
-        action = this.aiPlayerNextAction(upCardRank);
+    getChips(): number {
+        return this.chips;
+    }
 
-        // 2周目以降（turnCouner > 4）の場合はすでに設定している
-        if (turnCounter > 4) {
-            amount = this.gameDecision.amount;
-        } else {
-            if (action === "double") {
-                amount = this.aiPlayerDecideBetAmount() * 2;
-            } else if (action === "surrender") {
-                amount = this.aiPlayerDecideBetAmount() / 2;
-            } else {
-                amount = this.aiPlayerDecideBetAmount();
-            }
-        }
+    getGameDecision(): GameDecision {
+        return this.gameDecision;
+    }
 
-        this.gameDecision = new GameDecision(action, amount);
+    getHand(): string[] {
+        return this.hand;
+    }
+
+    getPlayerStatus(): string {
+        return this.playerStatus;
+    }
+
+    // userの入力値に従ってgameDecisionを返す
+    userPlayerGameDecision(actionParam: string): void {
+        const action: string = actionParam;
+        const amount: number = this.getGameDecision().getAmount();
+
+        this.setGameDecision(new GameDecision(action, amount));
     }
 
     // AIプレイヤーの次の手を判断
@@ -112,6 +110,18 @@ export class Player {
         }
 
         return nextAction;
+    }
+
+    // プレイヤーがbustか判定
+    checkIfPlayerIsBust(): boolean {
+        if (this.getHandScore() > 21) return true;
+        else return false;
+    }
+
+    // プレイヤーがそのターンのacting phaseを終了しているか判定
+    checkIfPlayerDoneWithActingPhase(): boolean {
+        if (["doneWithActing", "bust", "broke"].includes(this.getPlayerStatus())) return true;
+        else return false;
     }
 
     // ランクをスコアに変換する（Aが渡された場合はAをそのまま文字列として返す）
@@ -176,7 +186,6 @@ export class Player {
             aCounter -= 1;
         }
 
-        console.log(sum);
         return sum;
     }
 }
