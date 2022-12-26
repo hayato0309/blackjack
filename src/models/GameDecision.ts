@@ -8,7 +8,20 @@ export class GameDecision {
     }
 
     // setter
+    setAction(action: string): void {
+        this.action = action;
+    }
+
     setAmount(amount: number): void {
         this.amount = amount;
+    }
+
+    // getter
+    getAction(): string {
+        return this.action;
+    }
+
+    getAmount(): number {
+        return this.amount;
     }
 }

@@ -61,6 +61,22 @@ export class Table {
         return this.gamePhase;
     }
 
+    getComputerPlayerSpeed(): string {
+        return this.computerPlayerSpeed;
+    }
+
+    getTurnCounter(): number {
+        return this.turnCounter;
+    }
+
+    getPlayers(): Player[] {
+        return this.players;
+    }
+
+    getDeck(): Deck {
+        return this.deck;
+    }
+
     // 別途終了後、各プレイヤーに2枚のカードを割り当てる
     blackjackAssignPlayerHands(): void {
         this.players.map((player) => {
@@ -86,55 +102,42 @@ export class Table {
         return this.players[playerIndex];
     }
 
-    // Userプレイヤーに次のアクションと掛け金の決定を促す
-    promptNextUserActionAndBet(player: Player, actionParam: string, amountParam: number): void {
-        player.userPlayerGameDecision(actionParam, amountParam);
-    }
-
-    // AIプレイヤーに次のアクションと掛け金の決定を促す
-    promptNextAiActionAndBet(player: Player, upCardRank: string, turnCounter: number): void {
-        player.aiPlayerGameDecision(upCardRank, turnCounter);
+    // houseの表向きになっているカードのrankを返す
+    getUpCardRank(): string {
+        return this.players[0].getHand()[0].slice(1);
     }
 
     // gameDecisionに応じてプレイヤーの手札・playerStatus・チップを更新する
     // 全てのプレイヤーのplayerStatusがroundOverになるまで繰り返し実行される
     executeGameDecision(player: Player): void {
-        const paidBet: boolean = this.turnCounter > 4; // すでにbetを支払っているか（turnCounterが4より大きい場合はすでに支払っている）
-        const amount = player.gameDecision.amount;
-
-        if (player.gameDecision.action === "blackjack") {
-            this.updatePlayerChips(player, -amount);
-            player.setPlayerStatus("readyForActing");
-
-        } else if (player.gameDecision.action === "stand") {
-            // 掛け金をchipsから引き、ラウンドを終了する
-            if (!paidBet) this.updatePlayerChips(player, -amount);
-            player.setPlayerStatus("readyForActing");
-
-        } else if (player.gameDecision.action === "hit") {
-            // 掛け金をchipsから引き、もう一枚カードを引く
-            if (!paidBet) this.updatePlayerChips(player, -amount);
-            player.hand.push(this.deck.drawOne());
-
-        } else if (player.gameDecision.action === "double") {
-            // 掛け金の2倍をchipsから引き、もう一枚カードを引く。ダブルを宣言すると1枚しかカードを追加できない
-            this.updatePlayerChips(player, -amount);
-            player.hand.push(this.deck.drawOne());
-            player.setPlayerStatus("readyForActing");
-
-        } else if (player.gameDecision.action === "surrender") {
-            // 掛け金の半分をchipsから引き、ラウンドを終了する
-            this.updatePlayerChips(player, -Math.ceil(amount / 2));
-            player.setPlayerStatus("readyForActing");
+        const nextAction = player.getGameDecision().getAction();
+        switch (nextAction) {
+            case "blackjack":
+            case "stand":
+            case "surrender":
+                // acting phaseを終了する
+                player.setPlayerStatus("doneWithActing");
+                break;
+            case "hit":
+                // もう一枚カードを引く
+                player.hand.push(this.deck.drawOne());
+                break;
+            case "double":
+                // 掛け金をもう一度chipsから引き（betting phaseと合わせてbet*2引かれる）、もう一枚カードを引く
+                // ダブルを宣言すると1枚しかカードを追加できないので、そのままacting phaseを終了する
+                this.updatePlayerChips(player, -player.getGameDecision().getAmount());
+                player.hand.push(this.deck.drawOne());
+                player.setPlayerStatus("doneWithActing");
+                break;
+            default:
+                break;
         }
     }
 
-    // プレイヤーがbustか判定
-    checkIfPlayerIsBust(player: Player): void {
-        if (player.getHandScore() > 21) player.setPlayerStatus("bust");
-    }
-
     // 全てのプレイヤーがbettingを終了しているか判定
+    // ！！！要リファクタリング！！！
+    // !== "betting"ではなく、==="acting"に変える
+    // gameSettingをactingに変更する責務は切り出す（あくまで確認だけにとどめる）
     checkIfAllPlayersReadyForActing(): void {
         let doneBettingCounter = 0;
         this.players.map((player) => {
@@ -142,6 +145,16 @@ export class Table {
         });
 
         if (doneBettingCounter === 4) this.gamePhase = "acting";
+    }
+
+    // 全てのプレイヤーがactingを終了しているか判定
+    checkIfAllPlayersDoneWithActing(): boolean {
+        let doneActingCounter: number = 0;
+        this.players.map((player) => {
+            if (player.checkIfPlayerDoneWithActingPhase()) doneActingCounter++;
+        });
+
+        return doneActingCounter === 3;
     }
 
     // 勝敗判定
@@ -205,5 +218,28 @@ export class Table {
         const currChips = player.getChips();
         const newChips = currChips + amount;
         player.setChips(newChips);
+    }
+
+    // AIプレイヤーの1ターンにかかる時間を計算（ミリ秒で返す）
+    calcAiThinkingTime(): number {
+        const computerPlayerSpeed = this.getComputerPlayerSpeed();
+
+        let thinkingTime: number = 0;
+        switch (computerPlayerSpeed) {
+            case "fast":
+                thinkingTime = Math.random() * (2000 - 1500) + 1500;
+                break;
+            case "middle":
+                thinkingTime = Math.random() * (3000 - 2500) + 2500;
+                break;
+            case "slow":
+                thinkingTime = Math.random() * (4000 - 3500) + 3500;
+                break;
+            default:
+                thinkingTime = 1000;
+                break;
+        }
+
+        return Math.floor(thinkingTime);
     }
 }
