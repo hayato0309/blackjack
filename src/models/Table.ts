@@ -52,6 +52,10 @@ export class Table {
         this.gamePhase = gamePhase;
     }
 
+    setTurnCounter(turnCounter: number): void {
+        this.turnCounter = turnCounter;
+    }
+
     // getter
     getGameType(): string {
         return this.gameType;
@@ -94,9 +98,15 @@ export class Table {
         });
     }
 
+    // ターンを1つ進める
+    increaseTurnCounter(): void {
+        let turnCounter = this.getTurnCounter();
+        turnCounter++;
+        this.setTurnCounter(turnCounter);
+    }
+
     // 現在フォーカスしているプレイヤーを返す
     getTurnPlayer(): Player {
-        this.turnCounter++;
         const playerIndex = this.turnCounter % this.players.length;
 
         return this.players[playerIndex];

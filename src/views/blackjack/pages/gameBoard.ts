@@ -76,7 +76,7 @@ export class GameBoardPage {
                                 <button type="submit" class="inline-block shadow-sm bg-teal-500 hover:bg-teal-400 text-white font-bold tracking-wider shadow rounded-xl py-1 px-3 ml-1">Submit</button>
                             </form>
                         </div>
-                        <div id="action-buttons" class="flex justify-center mb-10 ${table.gamePhase === 'betting' ? 'hidden' : ''}">
+                        <div id="action-buttons" class="flex justify-center mb-10 ${table.getTurnPlayer().getType() !== 'user' ? 'hidden' : ''}">
                             <button type="submit" value="stand" class="action-button bg-zinc-800 hover:bg-teal-500 text-white text-lg font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Stand</button>
                             <button type="submit" value="double" class="action-button bg-zinc-800 hover:bg-teal-500 text-white text-lg font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Double</button>
                             <button type="submit" value="hit" class="action-button bg-zinc-800 hover:bg-teal-500 text-white text-lg font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Hit</button>
