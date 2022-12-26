@@ -62,13 +62,16 @@ export class Controller {
         });
 
         table.setGamePhase("acting");
-        GameBoardPage.createGameBoardPage(table);
         this.actingPhase(table);
     }
 
     static async actingPhase(table: Table) {
         while (table.getGamePhase() === "acting") {
+            table.increaseTurnCounter();
             let turnPlayer = table.getTurnPlayer();
+
+            // ターン毎にViewを更新
+            GameBoardPage.createGameBoardPage(table);
 
             // 全てのプレイヤーがactingを終了していれば、houseがカードを引き、game phaseを"evaluatingWinner"に変更
             if (table.checkIfAllPlayersDoneWithActing()) {
@@ -112,9 +115,6 @@ export class Controller {
                 // gameDecisionの実行
                 table.executeGameDecision(turnPlayer);
 
-                // GameBoardページのViewを更新
-                GameBoardPage.createGameBoardPage(table);
-
             } else if (turnPlayer.getType() === "user") {
                 // userActionに移行し、一旦ループを止める
                 this.userAction(table, turnPlayer);
@@ -132,8 +132,6 @@ export class Controller {
                 const target = e.target as HTMLButtonElement;
                 turnPlayer.userPlayerGameDecision(target.value);
                 table.executeGameDecision(turnPlayer);
-
-                GameBoardPage.createGameBoardPage(table);
 
                 // acting phaseのループに戻る
                 this.actingPhase(table);
