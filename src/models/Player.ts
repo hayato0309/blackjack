@@ -33,6 +33,10 @@ export class Player {
         this.gameDecision = gameDecision;
     }
 
+    setHand(hand: string[]): void {
+        this.hand = hand;
+    }
+
     // getter
     getName(): string {
         return this.name;
