@@ -5,6 +5,7 @@ import type { Player } from '../models/Player';
 import { GameSettingPage } from '../views/blackjack/pages/gameSetting';
 import { GameBoardPage } from '../views/blackjack/pages/gameBoard';
 import { CardView } from '../views/card';
+import { RoundResultModal } from '../views/blackjack/modals/roundResult';
 import { GameResultModal } from '../views/blackjack/modals/gameResult';
 import { GameDecision } from '../models/GameDecision';
 import { sleep } from "../utils/sleep";
@@ -56,8 +57,8 @@ export class Controller {
     // acting phaseの準備
     static setActingPhase(table: Table) {
         // 各プレイヤーのActionをリセット
-        const notHousePlayer = table.getPlayers().filter(player => player.getType() !== "house");
-        notHousePlayer.map(player => {
+        const notHousePlayers = table.getPlayers().filter(player => player.getType() !== "house");
+        notHousePlayers.map(player => {
             player.getGameDecision().setAction("");
         });
 
@@ -73,7 +74,7 @@ export class Controller {
             // ターン毎にViewを更新
             GameBoardPage.createGameBoardPage(table);
 
-            // 全てのプレイヤーがactingを終了していれば、houseがカードを引き、game phaseを"evaluatingWinner"に変更
+            // 全てのプレイヤーがactingを終了した後の、houseの処理
             if (table.checkIfAllPlayersDoneWithActing()) {
                 await sleep(1500);
 
@@ -88,9 +89,13 @@ export class Controller {
                     GameBoardPage.createGameBoardPage(table);
                 }
 
-                // houseのStatusを"doneWithActing"に設定してacting phaseを終了
-                house.setPlayerStatus("doneWithActing");
+                if (house.checkIfPlayerIsBust()) house.setPlayerStatus("bust");
+                else house.setPlayerStatus("doneWithActing");
+                
                 table.setGamePhase("evaluatingWinner");
+
+                await sleep(1500);
+                this.displayRoundResultModal(table);
             }
 
             // 【ターンスキップ判定】
@@ -108,7 +113,6 @@ export class Controller {
                 await sleep(thinkingTime);
 
                 // gameDecisionを作成しプレイヤーに設定
-                // const aiPlayerGameDecision = turnPlayer.aiPlayerGameDecision(table.getUpCardRank(), table.getTurnCounter());
                 let aiPlayerGameDecision = turnPlayer.getGameDecision();
                 aiPlayerGameDecision.setAction(turnPlayer.aiPlayerNextAction(table.getUpCardRank()));
 
@@ -137,6 +141,39 @@ export class Controller {
                 this.actingPhase(table);
             })
         });
+    }
+
+    static displayRoundResultModal(table: Table) {
+        const house = table.getPlayers()[0];
+        const notHousePlayers = table.getPlayers().filter(player => player.getType() !== "house");
+
+        // roundResultモーダルに表示するラウンドの結果（名前・勝敗・配当）
+        let roundResult = [];
+        notHousePlayers.map(player => {
+            let winner: string = table.getWinner(house, player);
+            let winOrLose: string = "";
+            switch (winner) {
+                case "player":
+                    winOrLose = "WIN";
+                    break;
+                case "house":
+                    winOrLose = "LOSE";
+                    break;
+                case "no one":
+                    winOrLose = "DRAW";
+                    break;
+                default:
+                    break;
+            }
+            let devidend: number = table.calcDevidend(house, player);
+           
+            roundResult.push({"name": player.getName(), "winOrLose": winOrLose, "devidend": devidend});
+        })
+
+        // roundResultモーダルに表示するラウンドの回数
+        let roundCounter: number = table.getResultLog().length + 1;
+
+        CONTAINER.appendChild(RoundResultModal.createRoundResultModal(roundResult, roundCounter));
     }
 
     static displayGameResultModal() {

@@ -81,6 +81,10 @@ export class Table {
         return this.deck;
     }
 
+    getResultLog(): array[] {
+        return this.resultLog;
+    }
+
     // 別途終了後、各プレイヤーに2枚のカードを割り当てる
     blackjackAssignPlayerHands(): void {
         this.players.map((player) => {
@@ -188,7 +192,9 @@ export class Table {
             const playerScore: number = player.getHandScore();
 
             if (houseScore === playerScore ||
-                (house.gameDecision.action === "blackjack" && player.gameDecision.action === "blackjack")) winner = "no one"; // 引き分け
+                (house.gameDecision.action === "blackjack" && player.gameDecision.action === "blackjack") ||
+                (house.gameDecision.action === "blackjack" && this.checkIfUserIsBlackjack(player))
+                ) winner = "no one"; // 引き分け
             else winner = houseScore > playerScore ? "house" : "player";
         }
 
@@ -196,31 +202,34 @@ export class Table {
     }
 
     // 勝敗判定に応じてchipsの増減額を計算（勝てば正の数、負ければ負の数を返す）
-    calcDevidend(house: Player, player: Player) {
-        let houseDevidend: number = 0;
-        let playerDevidend: number = 0;
-
+    calcDevidend(house: Player, player: Player): number {
+        let devidend: number = 0;
         const winner = this.getWinner(house, player);
 
         if (winner === "no one") {
             // do nothing
         } else if (winner === "house") {
-            if (house.gameDecision.action === "blackjack") {
-                houseDevidend = house.gameDecision.amount * 2.5;
-            } else {
-                houseDevidend = house.gameDecision.amount * 2;
-            }
+            if (player.gameDecision.action === "surrender") devidend = player.gameDecision.amount * 0.5; // surrenderした場合、掛け金の半分が返ってくる
         } else if (winner === "player") {
-            if (player.gameDecision.action === "blackjack") {
-                playerDevidend = player.gameDecision.amount * 2.5; // blackjackの場合の配当は2.5倍
-            } else if (player.gameDecision.action === "double") {
-                playerDevidend = player.gameDecision.amount * 2 * 2; // ダブルを宣言して勝った場合の配当は4倍
-            } else {
-                playerDevidend = player.gameDecision.amount * 2;
-            }
+            if (player.gameDecision.action === "blackjack") devidend = player.gameDecision.amount * 2.5; // blackjackの場合の配当は2.5倍（AIプレイヤーの場合）
+            else if (this.checkIfUserIsBlackjack(player)) devidend = player.gameDecision.amount * 2.5; // blackjackの場合の配当は2.5倍（Userプレイヤーの場合、Actionにblackjackがないので手札の枚数とスコアから判断）
+            else if (player.gameDecision.action === "double") devidend = player.gameDecision.amount * 2 * 2; // doubleを宣言して勝った場合の配当は4倍
+            else if (player.gameDecision.action === "surrender") devidend = player.gameDecision.amount * 0.5; // surrenderした場合、掛け金の半分が返ってくる
+            else devidend = player.gameDecision.amount * 2;
         }
 
-        return { house: houseDevidend, player: playerDevidend };
+        return devidend;
+    }
+
+    checkIfUserIsBlackjack(player: Player) :boolean {
+        if (player.getType() === "user") {
+            const handLength = player.getHand();
+            const handScore = player.getHandScore();
+
+            return handLength === 2 && handScore === 21;
+        } else {
+            return false;
+        }
     }
 
     // 金額を受け取りプレイヤーのchipsを更新する
