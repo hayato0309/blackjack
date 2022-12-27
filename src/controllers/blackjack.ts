@@ -170,10 +170,28 @@ export class Controller {
             roundResult.push({"name": player.getName(), "winOrLose": winOrLose, "devidend": devidend});
         })
 
-        // roundResultモーダルに表示するラウンドの回数
-        let roundCounter: number = table.getResultLog().length + 1;
+        // ラウンドの結果を表示するモーダルの表示
+        CONTAINER.appendChild(RoundResultModal.createRoundResultModal(roundResult, table));
+        // 次のラウンドをプレイするボタンのイベントを設定
+        RoundResultModal.setPlayAnotherRoundButtonEvent(table);
+    }
 
-        CONTAINER.appendChild(RoundResultModal.createRoundResultModal(roundResult, roundCounter));
+    static playAnotherRound(table: Table) {
+        // 次のラウンド用に必要な項目を初期化
+        table.setDeck(new Deck(table.getGameType()));
+        table.getDeck().shuffle();
+        table.getPlayers().map(player => {
+            player.setHand([]);
+            player.setPlayerStatus("betting");
+            player.setGameDecision({});
+        })
+        table.gamePhase = "betting";
+        table.turnCounter = 0;
+
+        // 手札2枚ずつを配る
+        table.blackjackAssignPlayerHands();
+        // GameBoardページのUI作成
+        GameBoardPage.createGameBoardPage(table);
     }
 
     static displayGameResultModal() {

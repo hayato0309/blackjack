@@ -1,10 +1,13 @@
+import { Controller } from "../../../controllers/blackjack";
+import { Table } from "../../../models/table";
+
 export class RoundResultModal {
-    static createRoundResultModal(roundResult: array[], roundCounter: number): HTMLDivElement {
+    static createRoundResultModal(roundResult: array[], table: Table): HTMLDivElement {
         const roundResultModal = document.createElement("div");
         roundResultModal.innerHTML = `
             <div class="flex justify-center items-center fixed top-0 left-0 h-screen w-screen bg-slate-500/50">
                 <div class="bg-white shadow-lg rounded-3xl w-1/2 p-8">
-                    <div class="text-3xl font-bold tracking-wider text-center mb-5">Round ${roundCounter}</div>
+                    <div class="text-3xl font-bold tracking-wider text-center mb-5">Round ${table.getResultLog().length + 1}</div>
                     <table class="w-full mb-8">
                         <thead class="flex w-full rounded-t-xl bg-zinc-100">
                             <tr class="flex w-full border-b-2">
@@ -32,7 +35,7 @@ export class RoundResultModal {
                         </tbody>
                     </table>
                     <div class="flex justify-center">
-                        <button class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Play Another Round</button>
+                        <button id="playAnotherRoundButton" class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Play Another Round</button>
                         <button class="bg-zinc-800 hover:bg-red-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Stop This Game</button>
                     </div>
                 </div>
@@ -40,5 +43,12 @@ export class RoundResultModal {
         `;
 
         return roundResultModal;
+    }
+
+    static setPlayAnotherRoundButtonEvent(table: Table): void {
+        const playAnotherRoundButton = <HTMLButtonElement>document.querySelector("#playAnotherRoundButton");
+        playAnotherRoundButton.addEventListener("click", () => {
+            Controller.playAnotherRound(table);
+        });
     }
 }
