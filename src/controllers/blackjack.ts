@@ -166,7 +166,13 @@ export class Controller {
                     break;
             }
             let devidend: number = table.calcDevidend(house, player);
-           
+
+            // 配当を各プレイヤーのchipsに反映
+            const currentChips = player.getChips();
+            const newChips = currentChips + devidend;
+            player.setChips(newChips); 
+
+            // roundResultモーダルの表示内容
             roundResult.push({"name": player.getName(), "winOrLose": winOrLose, "devidend": devidend});
         })
 
