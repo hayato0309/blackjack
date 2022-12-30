@@ -4,10 +4,11 @@ import { Table } from "../../../models/table";
 export class RoundResultModal {
     static createRoundResultModal(roundResult: array[], table: Table): HTMLDivElement {
         const roundResultModal = document.createElement("div");
+        roundResultModal.setAttribute("id", "roundResultModal");
         roundResultModal.innerHTML = `
             <div class="flex justify-center items-center fixed top-0 left-0 h-screen w-screen bg-slate-500/50">
                 <div class="bg-white shadow-lg rounded-3xl w-1/2 p-8">
-                    <div class="text-3xl font-bold tracking-wider text-center mb-5">Round ${table.getResultLog().length + 1}</div>
+                    <div class="text-3xl font-bold tracking-wider text-center mb-5">Round ${table.getResultLog().length}</div>
                     <table class="w-full mb-8">
                         <thead class="flex w-full rounded-t-xl bg-zinc-100">
                             <tr class="flex w-full border-b-2">
@@ -36,7 +37,7 @@ export class RoundResultModal {
                     </table>
                     <div class="flex justify-center">
                         <button id="playAnotherRoundButton" class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Play Another Round</button>
-                        <button class="bg-zinc-800 hover:bg-red-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Stop This Game</button>
+                        <button id="displayGameResultModal" class="bg-zinc-800 hover:bg-red-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Stop This Game</button>
                     </div>
                 </div>
             </div>
@@ -50,5 +51,16 @@ export class RoundResultModal {
         playAnotherRoundButton.addEventListener("click", () => {
             Controller.playAnotherRound(table);
         });
+    }
+
+    static setDisplayGameResultModalEvent(table): void {
+        const displayGameResultModalButton = <HTMLButtonElement>document.querySelector("#displayGameResultModal");
+        displayGameResultModalButton.addEventListener("click", () => {
+            // roundResultモーダルの削除
+            const roundResultModal = <HTMLDivElement>document.querySelector("#roundResultModal");
+            roundResultModal.remove();
+
+            Controller.displayGameResultModal(table);
+        })
     }
 }

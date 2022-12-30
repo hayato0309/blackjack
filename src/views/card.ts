@@ -41,10 +41,10 @@ export class CardView {
                 suitSymbol = "♦︎";
                 break;
             case "C":
-                suitSymbol = "♠︎";
+                suitSymbol = "♣︎";
                 break;
             case "S":
-                suitSymbol = "♣︎";
+                suitSymbol = "♠︎";
                 break;
         }
 
