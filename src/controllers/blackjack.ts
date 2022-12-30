@@ -170,10 +170,18 @@ export class Controller {
             roundResult.push({"name": player.getName(), "winOrLose": winOrLose, "devidend": devidend});
         })
 
+        // userプレイヤーの結果をresultLogに追加
+        const user = table.getPlayers()[2];
+        let resultLog = table.getResultLog();
+        resultLog.push({hand: user.getHand(), winOrLose: roundResult[1]["winOrLose"], devidend: roundResult[1]["devidend"]});
+        table.setResultLog(resultLog);
+
         // ラウンドの結果を表示するモーダルの表示
         CONTAINER.appendChild(RoundResultModal.createRoundResultModal(roundResult, table));
         // 次のラウンドをプレイするボタンのイベントを設定
         RoundResultModal.setPlayAnotherRoundButtonEvent(table);
+        // ゲームのresultLogモーダルを表示するボタンのイベントを設定
+        RoundResultModal.setDisplayGameResultModalEvent(table);
     }
 
     static playAnotherRound(table: Table) {
@@ -194,7 +202,8 @@ export class Controller {
         GameBoardPage.createGameBoardPage(table);
     }
 
-    static displayGameResultModal() {
-        // this.CONTAINER.appendChild(GameResultModal.createGameResultModal());
+    static displayGameResultModal(table) {
+        CONTAINER.appendChild(GameResultModal.createGameResultModal(table.getResultLog()));
+        GameResultModal.createResultLogTableRow(table.getResultLog());
     }
 }

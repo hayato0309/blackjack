@@ -56,6 +56,10 @@ export class Table {
         this.turnCounter = turnCounter;
     }
 
+    setResultLog(resultLog: object[]): void {
+        this.resultLog = resultLog;
+    }
+
     // getter
     getGameType(): string {
         return this.gameType;
@@ -81,7 +85,7 @@ export class Table {
         return this.deck;
     }
 
-    getResultLog(): array[] {
+    getResultLog(): object[] {
         return this.resultLog;
     }
 
