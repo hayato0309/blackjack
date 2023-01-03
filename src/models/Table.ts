@@ -2,13 +2,19 @@ import { Deck } from "./Deck";
 import { Player } from "./Player";
 import type { GameDecision } from "./GameDecision";
 
+export interface GameResultElement {
+    hand: string[],
+    winOrLose: string,
+    devidend: number
+}
+
 export class Table {
     gameType: string;
     betDenomination: number[];
     deck: Deck;
     players: Player[];
     gamePhase: string;
-    resultLog: string[];
+    resultLog: GameResultElement[];
     turnCounter: number;
     computerPlayerSpeed: string;
 
@@ -56,7 +62,7 @@ export class Table {
         this.turnCounter = turnCounter;
     }
 
-    setResultLog(resultLog: object[]): void {
+    setResultLog(resultLog: GameResultElement[]): void {
         this.resultLog = resultLog;
     }
 
@@ -85,7 +91,7 @@ export class Table {
         return this.deck;
     }
 
-    getResultLog(): object[] {
+    getResultLog(): GameResultElement[] {
         return this.resultLog;
     }
 
@@ -198,7 +204,7 @@ export class Table {
             if (houseScore === playerScore ||
                 (house.gameDecision.action === "blackjack" && player.gameDecision.action === "blackjack") ||
                 (house.gameDecision.action === "blackjack" && this.checkIfUserIsBlackjack(player))
-                ) winner = "no one"; // 引き分け
+            ) winner = "no one"; // 引き分け
             else winner = houseScore > playerScore ? "house" : "player";
         }
 
@@ -225,9 +231,9 @@ export class Table {
         return devidend;
     }
 
-    checkIfUserIsBlackjack(player: Player) :boolean {
+    checkIfUserIsBlackjack(player: Player): boolean {
         if (player.getType() === "user") {
-            const handLength = player.getHand();
+            const handLength = player.getHand().length;
             const handScore = player.getHandScore();
 
             return handLength === 2 && handScore === 21;

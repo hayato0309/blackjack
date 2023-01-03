@@ -1,8 +1,14 @@
 import { Controller } from "../../../controllers/blackjack";
-import { Table } from "../../../models/table";
+import type { Table } from "../../../models/Table";
+
+export interface RoundResultElement {
+    name: string,
+    winOrLose: string,
+    devidend: number
+}
 
 export class RoundResultModal {
-    static createRoundResultModal(roundResult: array[], table: Table): HTMLDivElement {
+    static createRoundResultModal(roundResult: RoundResultElement[], table: Table): HTMLDivElement {
         const roundResultModal = document.createElement("div");
         roundResultModal.setAttribute("id", "roundResultModal");
         roundResultModal.innerHTML = `
@@ -53,7 +59,7 @@ export class RoundResultModal {
         });
     }
 
-    static setDisplayGameResultModalEvent(table): void {
+    static setDisplayGameResultModalEvent(table: Table): void {
         const displayGameResultModalButton = <HTMLButtonElement>document.querySelector("#displayGameResultModal");
         displayGameResultModalButton.addEventListener("click", () => {
             // roundResultモーダルの削除

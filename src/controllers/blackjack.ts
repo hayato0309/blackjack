@@ -9,6 +9,7 @@ import { RoundResultModal } from '../views/blackjack/modals/roundResult';
 import { GameResultModal } from '../views/blackjack/modals/gameResult';
 import { GameDecision } from '../models/GameDecision';
 import { sleep } from "../utils/sleep";
+import type { RoundResultElement } from '../views/blackjack/modals/roundResult';
 
 export class Controller {
     static displayGameSettingPage(table: Table) {
@@ -91,7 +92,7 @@ export class Controller {
 
                 if (house.checkIfPlayerIsBust()) house.setPlayerStatus("bust");
                 else house.setPlayerStatus("doneWithActing");
-                
+
                 table.setGamePhase("evaluatingWinner");
 
                 await sleep(1500);
@@ -148,7 +149,7 @@ export class Controller {
         const notHousePlayers = table.getPlayers().filter(player => player.getType() !== "house");
 
         // roundResultモーダルに表示するラウンドの結果（名前・勝敗・配当）
-        let roundResult = [];
+        let roundResult: RoundResultElement[] = [];
         notHousePlayers.map(player => {
             let winner: string = table.getWinner(house, player);
             let winOrLose: string = "";
@@ -167,19 +168,19 @@ export class Controller {
             }
             let devidend: number = table.calcDevidend(house, player);
 
+            // roundResultモーダルの表示内容配列に追加
+            roundResult.push({ "name": player.getName(), "winOrLose": winOrLose, "devidend": devidend });
+
             // 配当を各プレイヤーのchipsに反映
             const currentChips = player.getChips();
             const newChips = currentChips + devidend;
-            player.setChips(newChips); 
-
-            // roundResultモーダルの表示内容
-            roundResult.push({"name": player.getName(), "winOrLose": winOrLose, "devidend": devidend});
+            player.setChips(newChips);
         })
 
-        // userプレイヤーの結果をresultLogに追加
+        // userプレイヤーの結果をtableのresultLogに追加
         const user = table.getPlayers()[2];
         let resultLog = table.getResultLog();
-        resultLog.push({hand: user.getHand(), winOrLose: roundResult[1]["winOrLose"], devidend: roundResult[1]["devidend"]});
+        resultLog.push({ hand: user.getHand(), winOrLose: roundResult[1]["winOrLose"], devidend: roundResult[1]["devidend"] });
         table.setResultLog(resultLog);
 
         // ラウンドの結果を表示するモーダルの表示
@@ -188,6 +189,7 @@ export class Controller {
         RoundResultModal.setPlayAnotherRoundButtonEvent(table);
         // ゲームのresultLogモーダルを表示するボタンのイベントを設定
         RoundResultModal.setDisplayGameResultModalEvent(table);
+
     }
 
     static playAnotherRound(table: Table) {
@@ -197,7 +199,7 @@ export class Controller {
         table.getPlayers().map(player => {
             player.setHand([]);
             player.setPlayerStatus("betting");
-            player.setGameDecision({});
+            player.setGameDecision(new GameDecision("", 0));
         })
         table.gamePhase = "betting";
         table.turnCounter = 0;
@@ -208,7 +210,7 @@ export class Controller {
         GameBoardPage.createGameBoardPage(table);
     }
 
-    static displayGameResultModal(table) {
+    static displayGameResultModal(table: Table) {
         CONTAINER.appendChild(GameResultModal.createGameResultModal(table.getResultLog()));
         GameResultModal.createResultLogTableRow(table.getResultLog());
     }
