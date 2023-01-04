@@ -1,10 +1,9 @@
 import { Deck } from './../models/Deck';
 import { CONTAINER } from '../config/config';
-import type { Table } from '../models/Table';
+import { Table } from '../models/Table';
 import type { Player } from '../models/Player';
 import { GameSettingPage } from '../views/blackjack/pages/gameSetting';
 import { GameBoardPage } from '../views/blackjack/pages/gameBoard';
-import { CardView } from '../views/card';
 import { RoundResultModal } from '../views/blackjack/modals/roundResult';
 import { GameResultModal } from '../views/blackjack/modals/gameResult';
 import { GameDecision } from '../models/GameDecision';
@@ -12,8 +11,8 @@ import { sleep } from "../utils/sleep";
 import type { RoundResultElement } from '../views/blackjack/modals/roundResult';
 
 export class Controller {
-    static displayGameSettingPage(table: Table) {
-        GameSettingPage.createGameSettingPage(table);
+    static displayGameSettingPage() {
+        GameSettingPage.createGameSettingPage(new Table());
     }
 
     static startBlackjack(table: Table) {
@@ -213,5 +212,10 @@ export class Controller {
     static displayGameResultModal(table: Table) {
         CONTAINER.appendChild(GameResultModal.createGameResultModal(table.getResultLog()));
         GameResultModal.createResultLogTableRow(table.getResultLog());
+        GameResultModal.setHomeButtonEvent();
+    }
+
+    static goHome() {
+        this.displayGameSettingPage();
     }
 }

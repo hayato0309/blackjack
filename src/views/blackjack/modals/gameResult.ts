@@ -1,7 +1,9 @@
 import { CardView } from "../../card";
+import { Controller } from "../../../controllers/blackjack";
+import type { GameResultElement } from "../../../models/Table";
 
 export class GameResultModal {
-    static createGameResultModal(resultLog: object[]): HTMLDivElement {
+    static createGameResultModal(resultLog: GameResultElement[]): HTMLDivElement {
 
         const numOfRounds: number = resultLog.length;
         let totalDevidend: number = 0;
@@ -31,7 +33,7 @@ export class GameResultModal {
                         </tbody>
                     </table>
                     <div class="flex justify-center">
-                        <button class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Home</button>
+                        <button id="homeButton" class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Home</button>
                         <button class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">New Game</button>
                     </div>
                 </div>
@@ -41,7 +43,7 @@ export class GameResultModal {
         return gameResultModal;
     }
 
-    static createResultLogTableRow(resultLog: object[]): void {
+    static createResultLogTableRow(resultLog: GameResultElement[]): void {
         const tbody = <HTMLTableElement>document.querySelector("#tbody");
         for (let i = 0; i < resultLog.length; i++) {
             const hand = resultLog[i]["hand"];
@@ -55,11 +57,18 @@ export class GameResultModal {
 
             tbody.innerHTML += `
             <tr class="flex w-full border-b">
-                <td class="text-center py-4 w-2/12">${i+1}</td>
+                <td class="text-center py-4 w-2/12">${i + 1}</td>
                 <td class="text-center py-4 w-4/12">${handWithSymbol}</td>
                 <td class="text-center py-4 w-3/12">${winOrLose}</td>
                 <td class="text-center py-4 w-3/12">+ $${devidend}</td>
             </tr>`
         }
+    }
+
+    static setHomeButtonEvent(): void {
+        const homeButton = <HTMLButtonElement>document.querySelector("#homeButton");
+        homeButton.addEventListener("click", () => {
+            Controller.goHome();
+        });
     }
 }
