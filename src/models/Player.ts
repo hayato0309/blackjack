@@ -46,6 +46,10 @@ export class Player {
         return this.type;
     }
 
+    getGameType(): string {
+        return this.gameType;
+    }
+
     getChips(): number {
         return this.chips;
     }

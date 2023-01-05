@@ -1,6 +1,6 @@
 import { CardView } from "../../card";
 import { Controller } from "../../../controllers/blackjack";
-import type { GameResultElement } from "../../../models/Table";
+import type { Table, GameResultElement } from "../../../models/Table";
 
 export class GameResultModal {
     static createGameResultModal(resultLog: GameResultElement[]): HTMLDivElement {
@@ -34,7 +34,7 @@ export class GameResultModal {
                     </table>
                     <div class="flex justify-center">
                         <button id="homeButton" class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Home</button>
-                        <button class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">New Game</button>
+                        <button id="newGameButton" class="bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">New Game</button>
                     </div>
                 </div>
             </div>
@@ -69,6 +69,13 @@ export class GameResultModal {
         const homeButton = <HTMLButtonElement>document.querySelector("#homeButton");
         homeButton.addEventListener("click", () => {
             Controller.goHome();
+        });
+    }
+
+    static setNewGameButtonEvent(table: Table): void {
+        const homeButton = <HTMLButtonElement>document.querySelector("#newGameButton");
+        homeButton.addEventListener("click", () => {
+            Controller.playNewGame(table);
         });
     }
 }
