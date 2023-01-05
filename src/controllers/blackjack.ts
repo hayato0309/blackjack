@@ -192,16 +192,20 @@ export class Controller {
     }
 
     static playAnotherRound(table: Table) {
-        // 次のラウンド用に必要な項目を初期化
+        // テーブルの初期化
+        table.setGamePhase("betting");
+        table.setTurnCounter(0);
+
+        // デッキの初期化
         table.setDeck(new Deck(table.getGameType()));
         table.getDeck().shuffle();
+
+        // プレイヤーの初期化（name, type, gameType, chipsは引き継ぐ）
         table.getPlayers().map(player => {
             player.setHand([]);
             player.setPlayerStatus("betting");
             player.setGameDecision(new GameDecision("", 0));
         })
-        table.gamePhase = "betting";
-        table.turnCounter = 0;
 
         // 手札2枚ずつを配る
         table.blackjackAssignPlayerHands();
@@ -213,9 +217,35 @@ export class Controller {
         CONTAINER.appendChild(GameResultModal.createGameResultModal(table.getResultLog()));
         GameResultModal.createResultLogTableRow(table.getResultLog());
         GameResultModal.setHomeButtonEvent();
+        GameResultModal.setNewGameButtonEvent(table);
     }
 
     static goHome() {
         this.displayGameSettingPage();
+    }
+
+    static playNewGame(table: Table) {
+        // テーブルの初期化
+        table.setGamePhase("betting");
+        table.setTurnCounter(0);
+        table.setResultLog([]);
+
+        // デッキの初期化
+        table.setDeck(new Deck(table.getGameType()));
+        table.getDeck().shuffle();
+
+        // プレイヤーの初期化（name, type, gameTypeは引き継ぐ）
+        table.getPlayers().map(player => {
+            player.setHand([]);
+            player.setChips(400);
+            player.setPlayerStatus("betting");
+            player.setGameDecision(new GameDecision("", 0));
+        })
+
+        // 手札2枚ずつを配る
+        table.blackjackAssignPlayerHands();
+
+        // GameBoardページのUI作成
+        GameBoardPage.createGameBoardPage(table);
     }
 }
