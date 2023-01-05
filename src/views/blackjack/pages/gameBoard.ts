@@ -13,7 +13,7 @@ export class GameBoardPage {
                         <div class="mb-2">
                             <div class="flex justify-center text-xl font-bold tracking-wider mb-1">
                                 <div class="mx-2">${table.players[1].name}</div>
-                                <div class="mx-2">$${table.players[1].chips}-</div>
+                                <div class="mx-2">$${table.players[1].chips}</div>
                             </div>
                             <div class="flex justify-center text-xl font-bold ${table.gamePhase === 'betting' ? 'hidden' : ''}">
                                 <div class="flex mx-2">
@@ -32,7 +32,7 @@ export class GameBoardPage {
                         <div class="mb-2">
                             <div class="flex justify-center text-xl font-bold tracking-wider mb-1">
                                 <div class="mx-2">${table.players[2].name}</div>
-                                <div class="mx-2">$${table.players[2].chips}-</div>
+                                <div class="mx-2">$${table.players[2].chips}</div>
                             </div>
                             <div class="flex justify-center text-xl font-bold ${table.gamePhase === 'betting' ? 'hidden' : ''}">
                                 <div class="flex mx-2">
@@ -51,7 +51,7 @@ export class GameBoardPage {
                         <div class="mb-2">
                             <div class="flex justify-center text-xl font-bold tracking-wider mb-1">
                                 <div class="mx-2">${table.players[3].name}</div>
-                                <div class="mx-2">$${table.players[3].chips}-</div>
+                                <div class="mx-2">$${table.players[3].chips}</div>
                             </div>
                             <div class="flex justify-center text-xl font-bold ${table.gamePhase === 'betting' ? 'hidden' : ''}">
                                 <div class="flex mx-2">
