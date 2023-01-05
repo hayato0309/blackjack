@@ -3,13 +3,11 @@ import { Controller } from "../../../controllers/blackjack";
 import type { Table, GameResultElement } from "../../../models/Table";
 
 export class GameResultModal {
-    static createGameResultModal(resultLog: GameResultElement[]): HTMLDivElement {
+    static createGameResultModal(resultLog: GameResultElement[], chips: number): HTMLDivElement {
 
         const numOfRounds: number = resultLog.length;
-        let totalDevidend: number = 0;
-        resultLog.map(log => {
-            totalDevidend += log["devidend"];
-        })
+        let chipsDelta: number = chips - 400;
+        let plusMinusSymbol: string = chipsDelta >= 0 ? "+" : "-";
 
         const gameResultModal = document.createElement("div");
         gameResultModal.innerHTML = `
@@ -18,7 +16,7 @@ export class GameResultModal {
                     <div class="text-3xl font-bold tracking-wider text-center mb-5">Game Result</div>
                     <div class="text-center mb-3 tracking-wider">
                         <div class="inline-block text-xl font-bold mx-4">${numOfRounds} rounds</div>
-                        <div class="inline-block text-xl font-bold mx-4">+ $${totalDevidend}</div>
+                        <div class="inline-block text-xl font-bold mx-4">$${chips} (${plusMinusSymbol}$${Math.abs(chipsDelta)})</div>
                     </div>
                     <table class="w-full max-h-3/4 mb-4">
                         <thead class="flex w-full rounded-t-xl bg-zinc-100">
@@ -26,7 +24,7 @@ export class GameResultModal {
                                 <th class="py-4 w-2/12">ROUND</th>
                                 <th class="py-4 w-4/12">HAND</th>
                                 <th class="py-4 w-3/12">WIN / LOSE</th>
-                                <th class="py-4 w-3/12">DEVIDEND</th>
+                                <th class="py-4 w-3/12">EARNINGS</th>
                             </tr>
                         </thead>
                         <tbody id="tbody" class="flex flex-col items-center justify-between overflow-y-scroll w-full h-5/6 shadow-xl shadow-inner rounded-b-xl">
@@ -60,7 +58,7 @@ export class GameResultModal {
                 <td class="text-center py-4 w-2/12">${i + 1}</td>
                 <td class="text-center py-4 w-4/12">${handWithSymbol}</td>
                 <td class="text-center py-4 w-3/12">${winOrLose}</td>
-                <td class="text-center py-4 w-3/12">+ $${devidend}</td>
+                <td class="text-center py-4 w-3/12">$${devidend}</td>
             </tr>`
         }
     }

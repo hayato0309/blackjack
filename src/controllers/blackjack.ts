@@ -214,7 +214,8 @@ export class Controller {
     }
 
     static displayGameResultModal(table: Table) {
-        CONTAINER.appendChild(GameResultModal.createGameResultModal(table.getResultLog()));
+        const userChips = table.getPlayers()[2].getChips();
+        CONTAINER.appendChild(GameResultModal.createGameResultModal(table.getResultLog(), userChips));
         GameResultModal.createResultLogTableRow(table.getResultLog());
         GameResultModal.setHomeButtonEvent();
         GameResultModal.setNewGameButtonEvent(table);
