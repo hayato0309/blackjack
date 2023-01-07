@@ -72,7 +72,7 @@ export class GameBoardPage {
                         <div class="flex justify-center mb-10 ${table.gamePhase !== 'betting' ? 'hidden' : ''}">
                             <form id="betAmountForm" class="block">
                                 <label class="inline-block mr-2 text-xl font-bold tracking-wider">Bet</label>
-                                <input id="betAmountInput" type="number" class="inline-block shadow-sm w-50 h-8 px-2 rounded-xl focus:outline-teal-500">
+                                <input id="betAmountInput" type="number" min="1" max="${table.players[2].chips}" class="inline-block shadow-sm w-40 h-8 px-2 rounded-xl focus:outline-teal-500">
                                 <button type="submit" class="inline-block bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-3 ml-1">Submit</button>
                             </form>
                         </div>
