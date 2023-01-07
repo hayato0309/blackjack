@@ -73,7 +73,7 @@ export class GameBoardPage {
                             <form id="betAmountForm" class="block">
                                 <label class="inline-block mr-2 text-xl font-bold tracking-wider">Bet</label>
                                 <input id="betAmountInput" type="number" class="inline-block shadow-sm w-50 h-8 px-2 rounded-xl focus:outline-teal-500">
-                                <button type="submit" class="inline-block shadow-sm bg-teal-500 hover:bg-teal-400 text-white font-bold tracking-wider shadow rounded-xl py-1 px-3 ml-1">Submit</button>
+                                <button type="submit" class="inline-block bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-3 ml-1">Submit</button>
                             </form>
                         </div>
                         <div id="action-buttons" class="flex justify-center mb-10 ${table.getTurnPlayer().getType() !== 'user' ? 'hidden' : ''}">
@@ -81,10 +81,6 @@ export class GameBoardPage {
                             <button type="submit" value="double" class="action-button bg-zinc-800 hover:bg-teal-500 text-white text-lg font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Double</button>
                             <button type="submit" value="hit" class="action-button bg-zinc-800 hover:bg-teal-500 text-white text-lg font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Hit</button>
                             <button type="submit" value="surrender" class="action-button bg-zinc-800 hover:bg-teal-500 text-white text-lg font-bold tracking-wider shadow rounded-xl py-1 px-6 mx-2">Surrender</button>
-                        </div>
-                        <div class="text-center">
-                            <a class="inline-block mx-4 underline underline-offset-2 hover:text-teal-500 cursor-pointer">Exit Game Room</a>
-                            <a class="inline-block mx-4 underline underline-offset-2 hover:text-teal-500 cursor-pointer">Reset Game</a>
                         </div>
                     </div>
                 </div>
