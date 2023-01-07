@@ -1,12 +1,13 @@
 import { CardView } from "../../card";
 import { Controller } from "../../../controllers/blackjack";
 import type { Table, GameResultElement } from "../../../models/Table";
+import { INITIAL_CHIPS } from "../../../config/config";
 
 export class GameResultModal {
     static createGameResultModal(resultLog: GameResultElement[], chips: number): HTMLDivElement {
 
         const numOfRounds: number = resultLog.length;
-        let chipsDelta: number = chips - 400;
+        let chipsDelta: number = chips - INITIAL_CHIPS;
         let plusMinusSymbol: string = chipsDelta >= 0 ? "+" : "-";
 
         const gameResultModal = document.createElement("div");

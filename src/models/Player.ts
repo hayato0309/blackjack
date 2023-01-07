@@ -1,5 +1,6 @@
 import { GameBoardPage } from './../views/blackjack/pages/gameBoard';
 import { GameDecision } from './GameDecision';
+import { INITIAL_CHIPS } from "../config/config";
 
 export class Player {
     name: string;
@@ -10,7 +11,7 @@ export class Player {
     playerStatus: string;
     gameDecision: GameDecision;
 
-    constructor(name: string, type: string, gameType: string, chips: number = 400, playerStatus: string = "betting") {
+    constructor(name: string, type: string, gameType: string, chips: number = INITIAL_CHIPS, playerStatus: string = "betting") {
         this.name = name;
         this.type = type;
         this.gameType = gameType;

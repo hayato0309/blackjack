@@ -9,6 +9,7 @@ import { GameResultModal } from '../views/blackjack/modals/gameResult';
 import { GameDecision } from '../models/GameDecision';
 import { sleep } from "../utils/sleep";
 import type { RoundResultElement } from '../views/blackjack/modals/roundResult';
+import { INITIAL_CHIPS } from "../config/config";
 
 export class Controller {
     static displayGameSettingPage() {
@@ -238,7 +239,7 @@ export class Controller {
         // プレイヤーの初期化（name, type, gameTypeは引き継ぐ）
         table.getPlayers().map(player => {
             player.setHand([]);
-            player.setChips(400);
+            player.setChips(INITIAL_CHIPS);
             player.setPlayerStatus("betting");
             player.setGameDecision(new GameDecision("", 0));
         })
