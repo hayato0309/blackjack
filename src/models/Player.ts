@@ -1,4 +1,3 @@
-import { GameBoardPage } from './../views/blackjack/pages/gameBoard';
 import { GameDecision } from './GameDecision';
 import { INITIAL_CHIPS } from "../config/config";
 
@@ -67,6 +66,13 @@ export class Player {
         return this.playerStatus;
     }
 
+    // 手札を1枚追加する
+    addAnotherCardToHand(newCard: string): void {
+        let hand = this.getHand();
+        hand.push(newCard);
+        this.setHand(hand);
+    }
+
     // userの入力値に従ってgameDecisionを返す
     userPlayerGameDecision(actionParam: string): void {
         const action: string = actionParam;
@@ -78,7 +84,7 @@ export class Player {
     // AIプレイヤーの次の手を判断
     aiPlayerNextAction(upCardRank: string): string {
         let nextAction = "";
-        const handLength: number = this.hand.length; // 手札の枚数
+        const handLength: number = this.getHand().length; // 手札の枚数
         const handScore: number = this.getHandScore(); // 手札のスコア
         const upCardScore: number | string = this.rankToScore(upCardRank); // houseの一枚だけ表向きのカードのスコア（Aの場合はAをstringとして持つ。A以外の場合はnumber）
 
@@ -149,10 +155,10 @@ export class Player {
 
     // AIプレイヤーの掛け金を決める（5の倍数）
     aiPlayerDecideBetAmount(): number {
-        if (this.playerStatus === "broke") return 0;
+        if (this.getPlayerStatus() === "broke") return 0;
 
         let betAmount: number = 0;
-        let budgetForOneRound = this.chips / 5; // 1ラウンドの掛け金上限
+        let budgetForOneRound = this.getChips() / 5; // 1ラウンドの掛け金上限
         betAmount = Math.floor((Math.random() * (budgetForOneRound / 5 - 5) + 5)) * 5;
 
         return betAmount;
@@ -174,10 +180,11 @@ export class Player {
 
     // プレイヤーの手札にあるカードの値の合計を返す
     getHandScore(): number {
-        const hand = this.hand;
+        const hand = this.getHand();
         const face = ["J", "Q", "K"];
         let sum = 0;
         let aCounter = 0; // 手札にあるAの枚数をカウント
+
         for (let i = 0; i < hand.length; i++) {
             const rank = hand[i].slice(1);
             if (rank === "A") {

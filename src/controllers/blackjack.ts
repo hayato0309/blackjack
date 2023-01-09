@@ -28,7 +28,7 @@ export class Controller {
         table.setComputerPlayerSpeed(computerPlayerSpeed);
 
         // deckを作成
-        const deck = new Deck(table.getGameType());
+        let deck = new Deck(table.getGameType());
         deck.shuffle();
         table.setDeck(deck);
 
@@ -40,15 +40,15 @@ export class Controller {
 
     static bettingPhase(table: Table) {
         table.players.map((player) => {
-            if (player.type === "house") {
+            if (player.getType() === "house") {
                 // houseは賭ける必要が無いので何もしない
-            } else if (player.type === "ai") {
-                player.setGameDecision(new GameDecision("bet", player.aiPlayerDecideBetAmount()));
-                player.setChips(player.getChips() - player.gameDecision.amount);
+            } else if (player.getType() === "ai") {
+                player.setGameDecision(new GameDecision("bet", player.aiPlayerDecideBetAmount())); // gameDecisionにbet金額を格納
+                player.setChips(player.getChips() - player.getGameDecision().getAmount()); // chipsからbet金額を引く
             } else if (player.type === "user") {
                 const userBetAmount = Number((<HTMLInputElement>document.querySelector("#betAmountInput")).value);
-                player.setGameDecision(new GameDecision("bet", userBetAmount));
-                player.setChips(player.getChips() - player.gameDecision.amount);
+                player.setGameDecision(new GameDecision("bet", userBetAmount)); // gameDecisionにbet金額を格納
+                player.setChips(player.getChips() - player.getGameDecision().getAmount()); // chipsからbet金額を引く
             }
         });
 
@@ -83,16 +83,31 @@ export class Controller {
                 GameBoardPage.createGameBoardPage(table);
 
                 const house = table.getPlayers()[0];
-                // 手札のスコアが17以上になるまで引き続ける
-                while (house.getHandScore() < 17) {
-                    await sleep(1500);
-                    house.getHand().push(table.getDeck().drawOne());
-                    GameBoardPage.createGameBoardPage(table);
+
+                // gameDecisionの更新
+                if (house.getHandScore() === 21 && house.getHand().length) {
+                    // blackjackの場合
+                    house.setGameDecision(new GameDecision("blackjack", 0));
+
+                } else if (house.getHandScore() > 17 && house.getHandScore() < 21) {
+                    // 手札のスコアが17より大きく21より小さい場合、その手札でstand
+                    house.setGameDecision(new GameDecision("stand", 0));
+
+                } else if (house.getHandScore() <= 17) {
+                    // 手札のスコアが17以下の場合、17を超えるまで引き続ける
+                    house.setGameDecision(new GameDecision("hit", 0));
+                    while (house.getHandScore() <= 17) {
+                        await sleep(1500);
+                        house.getHand().push(table.getDeck().drawOne());
+                        GameBoardPage.createGameBoardPage(table);
+                    }
                 }
 
+                // playerStatusの更新
                 if (house.checkIfPlayerIsBust()) house.setPlayerStatus("bust");
                 else house.setPlayerStatus("doneWithActing");
 
+                // gamePhaseの更新
                 table.setGamePhase("evaluatingWinner");
 
                 await sleep(1500);

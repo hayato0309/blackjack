@@ -10,7 +10,6 @@ export interface GameResultElement {
 
 export class Table {
     gameType: string;
-    betDenomination: number[];
     deck: Deck;
     players: Player[];
     gamePhase: string;
@@ -18,16 +17,15 @@ export class Table {
     turnCounter: number;
     computerPlayerSpeed: string;
 
-    constructor(gameType: string = "", userName: string = "", betDenomination: number[] = [], computerPlayerSpeed: string = "") {
-        this.gameType = gameType; // e.g. blackjack
-        this.betDenomination = betDenomination; // e.g. [1, 5, 20, 50, 100]
+    constructor() {
+        this.gameType = ""; // e.g. blackjack
         this.deck = new Deck(this.gameType);
         this.deck.shuffle();
         this.players = [];
         this.gamePhase = "betting"; // betting, acting, evaluatingWinner, roundOver
         this.resultLog = []; // 各ラウンドの結果をログに記録するための文字列の配列
         this.turnCounter = 0;
-        this.computerPlayerSpeed = computerPlayerSpeed;
+        this.computerPlayerSpeed = "";
     }
 
     // setter
@@ -36,14 +34,17 @@ export class Table {
     }
 
     setPlayers(userName: string): void {
-        this.players = [];
+        let players: Player[] = [];
+
         if (this.gameType === "blackjack") {
-            // blackjackの場合一般のプレイヤーは3人（house: 1, player: 3）
-            this.players.push(new Player('HOUSE', 'house', 'blackjack'));
-            this.players.push(new Player('Ninja🥷', 'ai', 'blackjack'));
-            this.players.push(new Player(userName, 'user', 'blackjack'));
-            this.players.push(new Player('Max🐶', 'ai', 'blackjack'));
+            // blackjackの場合一般のプレイヤーは3人（house: 1, player(aiとuser): 3）
+            players.push(new Player('HOUSE', 'house', 'blackjack'));
+            players.push(new Player('Ninja🥷', 'ai', 'blackjack'));
+            players.push(new Player(userName, 'user', 'blackjack'));
+            players.push(new Player('Max🐶', 'ai', 'blackjack'));
         }
+
+        this.players = players;
     }
 
     setComputerPlayerSpeed(computerPlayerSpeed: string): void {
@@ -99,7 +100,7 @@ export class Table {
     blackjackAssignPlayerHands(): void {
         this.players.map((player) => {
             for (let i = 0; i < 2; i++) {
-                player.hand.push(this.deck.drawOne());
+                player.addAnotherCardToHand(this.deck.drawOne());
             }
         });
     }
@@ -107,8 +108,8 @@ export class Table {
     // ラウンド開始時に手札と掛け金をリセットする
     blackjackClearPlayerHandsAndBets(): void {
         this.players.map((player) => {
-            player.hand = [];
-            player.gameDecision = <GameDecision>{};
+            player.setHand([]);
+            player.setGameDecision(<GameDecision>{});
         });
     }
 
@@ -121,14 +122,15 @@ export class Table {
 
     // 現在フォーカスしているプレイヤーを返す
     getTurnPlayer(): Player {
-        const playerIndex = this.turnCounter % this.players.length;
+        const players = this.getPlayers();
+        const playerIndex = this.getTurnCounter() % players.length;
 
-        return this.players[playerIndex];
+        return players[playerIndex];
     }
 
     // houseの表向きになっているカードのrankを返す
     getUpCardRank(): string {
-        return this.players[0].getHand()[0].slice(1);
+        return this.getPlayers()[0].getHand()[0].slice(1);
     }
 
     // gameDecisionに応じてプレイヤーの手札・playerStatus・チップを更新する
@@ -144,13 +146,13 @@ export class Table {
                 break;
             case "hit":
                 // もう一枚カードを引く
-                player.hand.push(this.deck.drawOne());
+                player.addAnotherCardToHand(this.deck.drawOne());
                 break;
             case "double":
                 // 掛け金をもう一度chipsから引き（betting phaseと合わせてbet*2引かれる）、もう一枚カードを引く
                 // ダブルを宣言すると1枚しかカードを追加できないので、そのままacting phaseを終了する
-                this.updatePlayerChips(player, -player.getGameDecision().getAmount());
-                player.hand.push(this.deck.drawOne());
+                this.updatePlayerChips(player, (-1) * player.getGameDecision().getAmount());
+                player.addAnotherCardToHand(this.deck.drawOne());
                 player.setPlayerStatus("doneWithActing");
                 break;
             default:
@@ -161,7 +163,7 @@ export class Table {
     // 全てのプレイヤーがactingを終了しているか判定
     checkIfAllPlayersDoneWithActing(): boolean {
         let doneActingCounter: number = 0;
-        this.players.map((player) => {
+        this.getPlayers().map((player) => {
             if (player.checkIfPlayerDoneWithActingPhase()) doneActingCounter++;
         });
 
@@ -172,15 +174,15 @@ export class Table {
     getWinner(house: Player, player: Player): string {
         let winner: string = ""; // houseかplayer
 
-        if (player.playerStatus === "surrender") winner = "house";
+        if (player.getPlayerStatus() === "surrender") winner = "house";
 
-        if (house.playerStatus === "bust" || player.playerStatus === "bust") {
+        if (house.getPlayerStatus() === "bust" || player.getPlayerStatus() === "bust") {
             // 少なくともhouseかplayerのどちらかがbustの場合
-            if (house.playerStatus === "bust" && player.playerStatus === "bust") {
+            if (house.getPlayerStatus() === "bust" && player.getPlayerStatus() === "bust") {
                 winner = "house"; // houseとplayerの両方がbustの時はhouseが勝利する
-            } else if (house.playerStatus === "bust") {
+            } else if (house.getPlayerStatus() === "bust") {
                 winner = "player";
-            } else if (player.playerStatus === "bust") {
+            } else if (player.getPlayerStatus() === "bust") {
                 winner = "house";
             }
         } else {
@@ -189,14 +191,14 @@ export class Table {
             const playerScore: number = player.getHandScore();
 
             if (houseScore === playerScore ||
-                (house.gameDecision.action === "blackjack" && player.gameDecision.action === "blackjack") ||
-                (house.gameDecision.action === "blackjack" && this.checkIfUserIsBlackjack(player))) {
+                (house.getGameDecision().getAction() === "blackjack" && player.getGameDecision().getAction() === "blackjack") ||
+                (house.getGameDecision().getAction() === "blackjack" && this.checkIfUserIsBlackjack(player))) {
                 winner = "no one"; // 引き分け
             } else {
                 winner = houseScore > playerScore ? "house" : "player";
             }
         }
-        console.log(winner);
+
         return winner;
     }
 
@@ -208,13 +210,13 @@ export class Table {
         if (winner === "no one") {
             // do nothing
         } else if (winner === "house") {
-            if (player.gameDecision.action === "surrender") devidend = player.gameDecision.amount * 0.5; // surrenderした場合、掛け金の半分が返ってくる
+            if (player.getGameDecision().getAction() === "surrender") devidend = player.getGameDecision().getAmount() * 0.5; // surrenderした場合、掛け金の半分が返ってくる
         } else if (winner === "player") {
-            if (player.gameDecision.action === "blackjack") devidend = player.gameDecision.amount * 2.5; // blackjackの場合の配当は2.5倍（AIプレイヤーの場合）
-            else if (this.checkIfUserIsBlackjack(player)) devidend = player.gameDecision.amount * 2.5; // blackjackの場合の配当は2.5倍（Userプレイヤーの場合、Actionにblackjackがないので手札の枚数とスコアから判断）
-            else if (player.gameDecision.action === "double") devidend = player.gameDecision.amount * 2 * 2; // doubleを宣言して勝った場合の配当は4倍
-            else if (player.gameDecision.action === "surrender") devidend = player.gameDecision.amount * 0.5; // surrenderした場合、掛け金の半分が返ってくる
-            else devidend = player.gameDecision.amount * 2;
+            if (player.getGameDecision().getAction() === "blackjack") devidend = player.getGameDecision().getAmount() * 2.5; // blackjackの場合の配当は2.5倍（AIプレイヤーの場合）
+            else if (this.checkIfUserIsBlackjack(player)) devidend = player.getGameDecision().getAmount() * 2.5; // blackjackの場合の配当は2.5倍（Userプレイヤーの場合、Actionにblackjackがないので手札の枚数とスコアから判断）
+            else if (player.getGameDecision().getAction() === "double") devidend = player.getGameDecision().getAmount() * 2 * 2; // doubleを宣言して勝った場合の配当は4倍
+            else if (player.getGameDecision().getAction() === "surrender") devidend = player.getGameDecision().getAmount() * 0.5; // surrenderした場合、掛け金の半分が返ってくる
+            else devidend = player.getGameDecision().getAmount() * 2;
         }
 
         return devidend;
