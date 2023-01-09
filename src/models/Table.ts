@@ -189,12 +189,12 @@ export class Table {
 
         if (house.playerStatus === "bust" || player.playerStatus === "bust") {
             // 少なくともhouseかplayerのどちらかがbustの場合
-            if (house.playerStatus === "bust") {
+            if (house.playerStatus === "bust" && player.playerStatus === "bust") {
+                winner = "house"; // houseとplayerの両方がbustの時はhouseが勝利する
+            } else if (house.playerStatus === "bust") {
                 winner = "player";
             } else if (player.playerStatus === "bust") {
                 winner = "house";
-            } else if (house.playerStatus === "bust" && player.playerStatus === "bust") {
-                winner = "house"; // houseとplayerの両方がbustの時はhouseが勝利する
             }
         } else {
             // houseもplayerもbustしてない場合
@@ -203,11 +203,13 @@ export class Table {
 
             if (houseScore === playerScore ||
                 (house.gameDecision.action === "blackjack" && player.gameDecision.action === "blackjack") ||
-                (house.gameDecision.action === "blackjack" && this.checkIfUserIsBlackjack(player))
-            ) winner = "no one"; // 引き分け
-            else winner = houseScore > playerScore ? "house" : "player";
+                (house.gameDecision.action === "blackjack" && this.checkIfUserIsBlackjack(player))) {
+                winner = "no one"; // 引き分け
+            } else {
+                winner = houseScore > playerScore ? "house" : "player";
+            }
         }
-
+        console.log(winner);
         return winner;
     }
 
