@@ -22,7 +22,7 @@ export class GameBoardPage {
                                 </div>
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-200 mx-1 py-1 px-2">Bet</div>
-                                    <div class="mx-1 py-1">${table.players[1].gameDecision.amount}</div>
+                                    <div class="mx-1 py-1">$${table.players[1].gameDecision.amount}</div>
                                 </div>
                             </div>
                         </div>
@@ -41,7 +41,7 @@ export class GameBoardPage {
                                 </div>
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-100 mx-1 py-1 px-2">Bet</div>
-                                    <div class="mx-1 py-1">${table.players[2].gameDecision.amount}</div>
+                                    <div class="mx-1 py-1">$${table.players[2].gameDecision.amount}</div>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +60,7 @@ export class GameBoardPage {
                                 </div>
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-200 mx-1 py-1 px-2">Bet</div>
-                                    <div class="mx-1 py-1">${table.players[3].gameDecision.amount}</div>
+                                    <div class="mx-1 py-1">$${table.players[3].gameDecision.amount}</div>
                                 </div>
                             </div>
                         </div>
