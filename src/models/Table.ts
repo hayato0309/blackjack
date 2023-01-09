@@ -158,19 +158,6 @@ export class Table {
         }
     }
 
-    // 全てのプレイヤーがbettingを終了しているか判定
-    // ！！！要リファクタリング！！！
-    // !== "betting"ではなく、==="acting"に変える
-    // gameSettingをactingに変更する責務は切り出す（あくまで確認だけにとどめる）
-    checkIfAllPlayersReadyForActing(): void {
-        let doneBettingCounter = 0;
-        this.players.map((player) => {
-            if (player.playerStatus !== "betting") doneBettingCounter++;
-        });
-
-        if (doneBettingCounter === 4) this.gamePhase = "acting";
-    }
-
     // 全てのプレイヤーがactingを終了しているか判定
     checkIfAllPlayersDoneWithActing(): boolean {
         let doneActingCounter: number = 0;
