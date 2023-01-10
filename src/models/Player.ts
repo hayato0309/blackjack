@@ -2,13 +2,13 @@ import { GameDecision } from './GameDecision';
 import { INITIAL_CHIPS } from "../config/config";
 
 export class Player {
-    name: string;
-    type: string;
-    gameType: string;
-    chips: number;
-    hand: string[];
-    playerStatus: string;
-    gameDecision: GameDecision;
+    private name: string;
+    private type: string;
+    private gameType: string;
+    private chips: number;
+    private hand: string[];
+    private playerStatus: string;
+    private gameDecision: GameDecision;
 
     constructor(name: string, type: string, gameType: string, chips: number = INITIAL_CHIPS, playerStatus: string = "betting") {
         this.name = name;
@@ -21,60 +21,60 @@ export class Player {
     }
 
     // setter
-    setChips(chips: number): void {
+    public setChips(chips: number): void {
         this.chips = chips;
     }
 
-    setPlayerStatus(playerStatus: string): void {
+    public setPlayerStatus(playerStatus: string): void {
         this.playerStatus = playerStatus;
     }
 
-    setGameDecision(gameDecision: GameDecision): void {
+    public setGameDecision(gameDecision: GameDecision): void {
         this.gameDecision = gameDecision;
     }
 
-    setHand(hand: string[]): void {
+    public setHand(hand: string[]): void {
         this.hand = hand;
     }
 
     // getter
-    getName(): string {
+    public getName(): string {
         return this.name;
     }
 
-    getType(): string {
+    public getType(): string {
         return this.type;
     }
 
-    getGameType(): string {
+    public getGameType(): string {
         return this.gameType;
     }
 
-    getChips(): number {
+    public getChips(): number {
         return this.chips;
     }
 
-    getGameDecision(): GameDecision {
+    public getGameDecision(): GameDecision {
         return this.gameDecision;
     }
 
-    getHand(): string[] {
+    public getHand(): string[] {
         return this.hand;
     }
 
-    getPlayerStatus(): string {
+    public getPlayerStatus(): string {
         return this.playerStatus;
     }
 
     // 手札を1枚追加する
-    addAnotherCardToHand(newCard: string): void {
+    public addAnotherCardToHand(newCard: string): void {
         let hand = this.getHand();
         hand.push(newCard);
         this.setHand(hand);
     }
 
     // userの入力値に従ってgameDecisionを返す
-    userPlayerGameDecision(actionParam: string): void {
+    public userPlayerGameDecision(actionParam: string): void {
         const action: string = actionParam;
         const amount: number = this.getGameDecision().getAmount();
 
@@ -82,7 +82,7 @@ export class Player {
     }
 
     // AIプレイヤーの次の手を判断
-    aiPlayerNextAction(upCardRank: string): string {
+    public aiPlayerNextAction(upCardRank: string): string {
         let nextAction = "";
         const handLength: number = this.getHand().length; // 手札の枚数
         const handScore: number = this.getHandScore(); // 手札のスコア
@@ -128,19 +128,19 @@ export class Player {
     }
 
     // プレイヤーがbustか判定
-    checkIfPlayerIsBust(): boolean {
+    public checkIfPlayerIsBust(): boolean {
         if (this.getHandScore() > 21) return true;
         else return false;
     }
 
     // プレイヤーがそのターンのacting phaseを終了しているか判定
-    checkIfPlayerDoneWithActingPhase(): boolean {
+    public checkIfPlayerDoneWithActingPhase(): boolean {
         if (["doneWithActing", "bust", "broke"].includes(this.getPlayerStatus())) return true;
         else return false;
     }
 
     // ランクをスコアに変換する（Aが渡された場合はAをそのまま文字列として返す）
-    rankToScore(rank: string): number | string {
+    private rankToScore(rank: string): number | string {
         let score = 0;
         const face = ["J", "Q", "K"];
 
@@ -154,7 +154,7 @@ export class Player {
     }
 
     // AIプレイヤーの掛け金を決める（5の倍数）
-    aiPlayerDecideBetAmount(): number {
+    public aiPlayerDecideBetAmount(): number {
         if (this.getPlayerStatus() === "broke") return 0;
 
         let betAmount: number = 0;
@@ -164,22 +164,8 @@ export class Player {
         return betAmount;
     }
 
-    // AIプレイヤーがサレンダーする確率の計算（現状5％の確率でサレンダーする）
-    aiPlayerSurrender(): boolean {
-        let willSurrender = false;
-        const randomNum = Math.floor(Math.random() * 2); // 0〜19の20個の整数のうちランダムで作成
-        willSurrender = randomNum === 0;
-
-        return willSurrender;
-    }
-
-    // 各ラウンド終了時の勝ち負けの金額を計算
-    winAmount(): number {
-        return 123;
-    }
-
     // プレイヤーの手札にあるカードの値の合計を返す
-    getHandScore(): number {
+    public getHandScore(): number {
         const hand = this.getHand();
         const face = ["J", "Q", "K"];
         let sum = 0;

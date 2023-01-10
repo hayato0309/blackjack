@@ -9,13 +9,13 @@ export interface GameResultElement {
 }
 
 export class Table {
-    gameType: string;
-    deck: Deck;
-    players: Player[];
-    gamePhase: string;
-    resultLog: GameResultElement[];
-    turnCounter: number;
-    computerPlayerSpeed: string;
+    private gameType: string;
+    private deck: Deck;
+    private players: Player[];
+    private gamePhase: string;
+    private resultLog: GameResultElement[];
+    private turnCounter: number;
+    private computerPlayerSpeed: string;
 
     constructor() {
         this.gameType = ""; // e.g. blackjack
@@ -29,11 +29,11 @@ export class Table {
     }
 
     // setter
-    setGameType(gameType: string): void {
+    public setGameType(gameType: string): void {
         this.gameType = gameType;
     }
 
-    setPlayers(userName: string): void {
+    public setPlayers(userName: string): void {
         let players: Player[] = [];
 
         if (this.gameType === "blackjack") {
@@ -47,57 +47,57 @@ export class Table {
         this.players = players;
     }
 
-    setComputerPlayerSpeed(computerPlayerSpeed: string): void {
+    public setComputerPlayerSpeed(computerPlayerSpeed: string): void {
         this.computerPlayerSpeed = computerPlayerSpeed;
     }
 
-    setDeck(deck: Deck): void {
+    public setDeck(deck: Deck): void {
         this.deck = deck;
     }
 
-    setGamePhase(gamePhase: string): void {
+    public setGamePhase(gamePhase: string): void {
         this.gamePhase = gamePhase;
     }
 
-    setTurnCounter(turnCounter: number): void {
+    public setTurnCounter(turnCounter: number): void {
         this.turnCounter = turnCounter;
     }
 
-    setResultLog(resultLog: GameResultElement[]): void {
+    public setResultLog(resultLog: GameResultElement[]): void {
         this.resultLog = resultLog;
     }
 
     // getter
-    getGameType(): string {
+    public getGameType(): string {
         return this.gameType;
     }
 
-    getGamePhase(): string {
+    public getGamePhase(): string {
         return this.gamePhase;
     }
 
-    getComputerPlayerSpeed(): string {
+    public getComputerPlayerSpeed(): string {
         return this.computerPlayerSpeed;
     }
 
-    getTurnCounter(): number {
+    public getTurnCounter(): number {
         return this.turnCounter;
     }
 
-    getPlayers(): Player[] {
+    public getPlayers(): Player[] {
         return this.players;
     }
 
-    getDeck(): Deck {
+    public getDeck(): Deck {
         return this.deck;
     }
 
-    getResultLog(): GameResultElement[] {
+    public getResultLog(): GameResultElement[] {
         return this.resultLog;
     }
 
     // 別途終了後、各プレイヤーに2枚のカードを割り当てる
-    blackjackAssignPlayerHands(): void {
+    public blackjackAssignPlayerHands(): void {
         this.players.map((player) => {
             for (let i = 0; i < 2; i++) {
                 player.addAnotherCardToHand(this.deck.drawOne());
@@ -106,7 +106,7 @@ export class Table {
     }
 
     // ラウンド開始時に手札と掛け金をリセットする
-    blackjackClearPlayerHandsAndBets(): void {
+    public lackjackClearPlayerHandsAndBets(): void {
         this.players.map((player) => {
             player.setHand([]);
             player.setGameDecision(<GameDecision>{});
@@ -114,14 +114,14 @@ export class Table {
     }
 
     // ターンを1つ進める
-    increaseTurnCounter(): void {
+    public increaseTurnCounter(): void {
         let turnCounter = this.getTurnCounter();
         turnCounter++;
         this.setTurnCounter(turnCounter);
     }
 
     // 現在フォーカスしているプレイヤーを返す
-    getTurnPlayer(): Player {
+    public getTurnPlayer(): Player {
         const players = this.getPlayers();
         const playerIndex = this.getTurnCounter() % players.length;
 
@@ -129,13 +129,13 @@ export class Table {
     }
 
     // houseの表向きになっているカードのrankを返す
-    getUpCardRank(): string {
+    public getUpCardRank(): string {
         return this.getPlayers()[0].getHand()[0].slice(1);
     }
 
     // gameDecisionに応じてプレイヤーの手札・playerStatus・チップを更新する
     // 全てのプレイヤーのplayerStatusがroundOverになるまで繰り返し実行される
-    executeGameDecision(player: Player): void {
+    public executeGameDecision(player: Player): void {
         const nextAction = player.getGameDecision().getAction();
         switch (nextAction) {
             case "blackjack":
@@ -161,7 +161,7 @@ export class Table {
     }
 
     // 全てのプレイヤーがactingを終了しているか判定
-    checkIfAllPlayersDoneWithActing(): boolean {
+    public checkIfAllPlayersDoneWithActing(): boolean {
         let doneActingCounter: number = 0;
         this.getPlayers().map((player) => {
             if (player.checkIfPlayerDoneWithActingPhase()) doneActingCounter++;
@@ -171,7 +171,7 @@ export class Table {
     }
 
     // 勝敗判定
-    getWinner(house: Player, player: Player): string {
+    public getWinner(house: Player, player: Player): string {
         let winner: string = ""; // houseかplayer
 
         if (player.getPlayerStatus() === "surrender") winner = "house";
@@ -203,7 +203,7 @@ export class Table {
     }
 
     // 勝敗判定に応じてchipsの増減額を計算（勝てば正の数、負ければ負の数を返す）
-    calcDevidend(house: Player, player: Player): number {
+    public calcDevidend(house: Player, player: Player): number {
         let devidend: number = 0;
         const winner = this.getWinner(house, player);
 
@@ -222,7 +222,7 @@ export class Table {
         return devidend;
     }
 
-    checkIfUserIsBlackjack(player: Player): boolean {
+    public checkIfUserIsBlackjack(player: Player): boolean {
         if (player.getType() === "user") {
             const handLength = player.getHand().length;
             const handScore = player.getHandScore();
@@ -234,14 +234,14 @@ export class Table {
     }
 
     // 金額を受け取りプレイヤーのchipsを更新する
-    updatePlayerChips(player: Player, amount: number): void {
+    public updatePlayerChips(player: Player, amount: number): void {
         const currChips = player.getChips();
         const newChips = currChips + amount;
         player.setChips(newChips);
     }
 
     // AIプレイヤーの1ターンにかかる時間を計算（ミリ秒で返す）
-    calcAiThinkingTime(): number {
+    public calcAiThinkingTime(): number {
         const computerPlayerSpeed = this.getComputerPlayerSpeed();
 
         let thinkingTime: number = 0;

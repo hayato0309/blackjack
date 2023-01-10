@@ -39,13 +39,13 @@ export class Controller {
     }
 
     static bettingPhase(table: Table) {
-        table.players.map((player) => {
+        table.getPlayers().map((player) => {
             if (player.getType() === "house") {
                 // houseは賭ける必要が無いので何もしない
             } else if (player.getType() === "ai") {
                 player.setGameDecision(new GameDecision("bet", player.aiPlayerDecideBetAmount())); // gameDecisionにbet金額を格納
                 player.setChips(player.getChips() - player.getGameDecision().getAmount()); // chipsからbet金額を引く
-            } else if (player.type === "user") {
+            } else if (player.getType() === "user") {
                 const userBetAmount = Number((<HTMLInputElement>document.querySelector("#betAmountInput")).value);
                 player.setGameDecision(new GameDecision("bet", userBetAmount)); // gameDecisionにbet金額を格納
                 player.setChips(player.getChips() - player.getGameDecision().getAmount()); // chipsからbet金額を引く
@@ -204,7 +204,6 @@ export class Controller {
         RoundResultModal.setPlayAnotherRoundButtonEvent(table);
         // ゲームのresultLogモーダルを表示するボタンのイベントを設定
         RoundResultModal.setDisplayGameResultModalEvent(table);
-
     }
 
     static playAnotherRound(table: Table) {

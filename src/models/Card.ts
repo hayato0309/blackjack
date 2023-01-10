@@ -1,6 +1,6 @@
 export class Card {
-    suit: string;
-    rank: string;
+    private suit: string;
+    private rank: string;
 
     constructor(suit: string, rank: string) {
         this.suit = suit;
@@ -8,11 +8,11 @@ export class Card {
     }
 
     // getter
-    getRank(): string {
+    public getRank(): string {
         return this.rank;
     }
 
-    getRankNumber() {
+    public getRankNumber() {
         const faces = ["J", "Q", "K"];
 
         if (faces.includes(this.getRank())) return 10;

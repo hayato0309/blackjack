@@ -91,7 +91,7 @@ export class GameBoardPage {
         const cardContainers = Array.from(document.querySelectorAll(".card-container"));
         for (let i = 0; i < cardContainers.length; i++) {
             let cards: string = "";
-            table.players[i].hand.map((card, index) => {
+            table.getPlayers()[i].getHand().map((card, index) => {
                 if (table.getGamePhase() === "betting") {
                     // gamePhaseがbettingの時は全てのカードは伏せた状態
                     cards += CardView.createReversedCard();
