@@ -181,21 +181,21 @@ export class Controller {
                 default:
                     break;
             }
-            let devidend: number = table.calcDevidend(house, player);
+            let earnings: number = table.calcEarnings(house, player);
 
             // roundResultモーダルの表示内容配列に追加
-            roundResult.push({ "name": player.getName(), "winOrLose": winOrLose, "devidend": devidend });
+            roundResult.push({ "name": player.getName(), "winOrLose": winOrLose, "earnings": earnings });
 
             // 配当を各プレイヤーのchipsに反映
             const currentChips = player.getChips();
-            const newChips = currentChips + devidend;
+            const newChips = currentChips + earnings;
             player.setChips(newChips);
         })
 
         // userプレイヤーの結果をtableのresultLogに追加
         const user = table.getPlayers()[2];
         let resultLog = table.getResultLog();
-        resultLog.push({ hand: user.getHand(), winOrLose: roundResult[1]["winOrLose"], devidend: roundResult[1]["devidend"] });
+        resultLog.push({ hand: user.getHand(), winOrLose: roundResult[1]["winOrLose"], earnings: roundResult[1]["earnings"] });
         table.setResultLog(resultLog);
 
         // ラウンドの結果を表示するモーダルの表示

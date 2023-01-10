@@ -5,7 +5,7 @@ import type { GameDecision } from "./GameDecision";
 export interface GameResultElement {
     hand: string[],
     winOrLose: string,
-    devidend: number
+    earnings: number
 }
 
 export class Table {
@@ -203,23 +203,23 @@ export class Table {
     }
 
     // 勝敗判定に応じてchipsの増減額を計算（勝てば正の数、負ければ負の数を返す）
-    public calcDevidend(house: Player, player: Player): number {
-        let devidend: number = 0;
+    public calcEarnings(house: Player, player: Player): number {
+        let earnings: number = 0;
         const winner = this.getWinner(house, player);
 
         if (winner === "no one") {
             // do nothing
         } else if (winner === "house") {
-            if (player.getGameDecision().getAction() === "surrender") devidend = player.getGameDecision().getAmount() * 0.5; // surrenderした場合、掛け金の半分が返ってくる
+            if (player.getGameDecision().getAction() === "surrender") earnings = player.getGameDecision().getAmount() * 0.5; // surrenderした場合、掛け金の半分が返ってくる
         } else if (winner === "player") {
-            if (player.getGameDecision().getAction() === "blackjack") devidend = player.getGameDecision().getAmount() * 2.5; // blackjackの場合の配当は2.5倍（AIプレイヤーの場合）
-            else if (this.checkIfUserIsBlackjack(player)) devidend = player.getGameDecision().getAmount() * 2.5; // blackjackの場合の配当は2.5倍（Userプレイヤーの場合、Actionにblackjackがないので手札の枚数とスコアから判断）
-            else if (player.getGameDecision().getAction() === "double") devidend = player.getGameDecision().getAmount() * 2 * 2; // doubleを宣言して勝った場合の配当は4倍
-            else if (player.getGameDecision().getAction() === "surrender") devidend = player.getGameDecision().getAmount() * 0.5; // surrenderした場合、掛け金の半分が返ってくる
-            else devidend = player.getGameDecision().getAmount() * 2;
+            if (player.getGameDecision().getAction() === "blackjack") earnings = player.getGameDecision().getAmount() * 2.5; // blackjackの場合の配当は2.5倍（AIプレイヤーの場合）
+            else if (this.checkIfUserIsBlackjack(player)) earnings = player.getGameDecision().getAmount() * 2.5; // blackjackの場合の配当は2.5倍（Userプレイヤーの場合、Actionにblackjackがないので手札の枚数とスコアから判断）
+            else if (player.getGameDecision().getAction() === "double") earnings = player.getGameDecision().getAmount() * 2 * 2; // doubleを宣言して勝った場合の配当は4倍
+            else if (player.getGameDecision().getAction() === "surrender") earnings = player.getGameDecision().getAmount() * 0.5; // surrenderした場合、掛け金の半分が返ってくる
+            else earnings = player.getGameDecision().getAmount() * 2;
         }
 
-        return devidend;
+        return earnings;
     }
 
     public checkIfUserIsBlackjack(player: Player): boolean {

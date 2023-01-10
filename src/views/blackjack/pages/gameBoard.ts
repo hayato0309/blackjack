@@ -2,9 +2,13 @@ import { CONTAINER } from "../../../config/config";
 import type { Table } from "../../../models/Table";
 import { Controller } from "../../../controllers/blackjack";
 import { CardView } from "../../../views/card";
+import type { Player } from "../../../models/Player";
 
 export class GameBoardPage {
     static createGameBoardPage(table: Table): void {
+        const players: Player[] = table.getPlayers();
+        const gamePhase: string = table.getGamePhase();
+
         CONTAINER.innerHTML = `
             <div class="h-screen w-screen">
                 <div class="flex justify-center items-center h-2/5 card-container"></div>
@@ -12,17 +16,17 @@ export class GameBoardPage {
                     <div class="scale-75" style="width: 30%">
                         <div class="mb-2">
                             <div class="flex justify-center text-xl font-bold tracking-wider mb-1">
-                                <div class="mx-2">${table.players[1].name}</div>
-                                <div class="mx-2">$${table.players[1].chips}</div>
+                                <div class="mx-2">${players[1].getName()}</div>
+                                <div class="mx-2">$${players[1].getChips()}</div>
                             </div>
-                            <div class="flex justify-center text-xl font-bold ${table.gamePhase === 'betting' ? 'hidden' : ''}">
+                            <div class="flex justify-center text-xl font-bold ${gamePhase === 'betting' ? 'hidden' : ''}">
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-200 mx-1 py-1 px-2">Action</div>
-                                    <div class="mx-1 py-1">${table.players[1].gameDecision.action}</div>                                
+                                    <div class="mx-1 py-1">${players[1].getGameDecision().getAction()}</div>                                
                                 </div>
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-200 mx-1 py-1 px-2">Bet</div>
-                                    <div class="mx-1 py-1">$${table.players[1].gameDecision.amount}</div>
+                                    <div class="mx-1 py-1">$${players[1].getGameDecision().getAmount()}</div>
                                 </div>
                             </div>
                         </div>
@@ -31,17 +35,17 @@ export class GameBoardPage {
                     <div class="rounded-lg bg-white/60 p-3" style="width: 40%">
                         <div class="mb-2">
                             <div class="flex justify-center text-xl font-bold tracking-wider mb-1">
-                                <div class="mx-2">${table.players[2].name}</div>
-                                <div class="mx-2">$${table.players[2].chips}</div>
+                                <div class="mx-2">${players[2].getName()}</div>
+                                <div class="mx-2">$${players[2].getChips()}</div>
                             </div>
-                            <div class="flex justify-center text-xl font-bold ${table.gamePhase === 'betting' ? 'hidden' : ''}">
+                            <div class="flex justify-center text-xl font-bold ${gamePhase === 'betting' ? 'hidden' : ''}">
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-100 mx-1 py-1 px-2">Action</div>
-                                    <div class="mx-1 py-1">${table.players[2].gameDecision.action}</div>                                
+                                    <div class="mx-1 py-1">${players[2].getGameDecision().getAction()}</div>                                
                                 </div>
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-100 mx-1 py-1 px-2">Bet</div>
-                                    <div class="mx-1 py-1">$${table.players[2].gameDecision.amount}</div>
+                                    <div class="mx-1 py-1">$${players[2].getGameDecision().getAmount()}</div>
                                 </div>
                             </div>
                         </div>
@@ -50,17 +54,17 @@ export class GameBoardPage {
                     <div class="scale-75" style="width: 30%">
                         <div class="mb-2">
                             <div class="flex justify-center text-xl font-bold tracking-wider mb-1">
-                                <div class="mx-2">${table.players[3].name}</div>
-                                <div class="mx-2">$${table.players[3].chips}</div>
+                                <div class="mx-2">${players[3].getName()}</div>
+                                <div class="mx-2">$${players[3].getChips()}</div>
                             </div>
-                            <div class="flex justify-center text-xl font-bold ${table.gamePhase === 'betting' ? 'hidden' : ''}">
+                            <div class="flex justify-center text-xl font-bold ${gamePhase === 'betting' ? 'hidden' : ''}">
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-200 mx-1 py-1 px-2">Action</div>
-                                    <div class="mx-1 py-1">${table.players[3].gameDecision.action}</div>                                
+                                    <div class="mx-1 py-1">${players[3].getGameDecision().getAction()}</div>                                
                                 </div>
                                 <div class="flex mx-2">
                                     <div class="rounded-lg bg-slate-200 mx-1 py-1 px-2">Bet</div>
-                                    <div class="mx-1 py-1">$${table.players[3].gameDecision.amount}</div>
+                                    <div class="mx-1 py-1">$${players[3].getGameDecision().getAmount()}</div>
                                 </div>
                             </div>
                         </div>
@@ -69,10 +73,10 @@ export class GameBoardPage {
                 </div>
                 <div class="flex justify-center items-center h-1/5">
                     <div class="block w-2/5">
-                        <div class="flex justify-center mb-10 ${table.gamePhase !== 'betting' ? 'hidden' : ''}">
+                        <div class="flex justify-center mb-10 ${gamePhase !== 'betting' ? 'hidden' : ''}">
                             <form id="betAmountForm" class="block">
                                 <label class="inline-block mr-2 text-xl font-bold tracking-wider">Bet</label>
-                                <input id="betAmountInput" type="number" min="1" max="${table.players[2].chips}" class="inline-block shadow-sm w-40 h-8 px-2 rounded-xl focus:outline-teal-500">
+                                <input id="betAmountInput" type="number" min="1" max="${players[2].getChips()}" class="inline-block shadow-sm w-40 h-8 px-2 rounded-xl focus:outline-teal-500">
                                 <button type="submit" class="inline-block bg-zinc-800 hover:bg-teal-500 text-white font-bold tracking-wider shadow rounded-xl py-1 px-3 ml-1">Submit</button>
                             </form>
                         </div>
