@@ -1,6 +1,6 @@
 export class Deck {
-    gameType: string;
-    cards: string[];
+    private gameType: string;
+    private cards: string[];
 
     constructor(gameType: string) {
         this.gameType = gameType;
@@ -10,24 +10,24 @@ export class Deck {
     }
 
     // setter
-    setCards(cards: string[]): void {
+    public setCards(cards: string[]): void {
         this.cards = cards;
     }
 
     // getter
-    getCards(): string[] {
+    public getCards(): string[] {
         return this.cards;
     }
 
     // Deckにカードを一枚追加する
-    addAnotherCardToDeck(newCard: string): void {
+    private addAnotherCardToDeck(newCard: string): void {
         let cards = this.getCards();
         cards.push(newCard);
         this.setCards(cards);
     }
 
     // ゲームの種類に応じてカードを作成する
-    createCards(gameType: string) {
+    private createCards(gameType: string) {
         if (gameType === "blackjack") {
             const suit = ["H", "D", "C", "S"];
             const rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
@@ -41,7 +41,7 @@ export class Deck {
     }
 
     // カードをシャッフルする（Fisher-Yetesアルゴリズム）
-    shuffle() {
+    public shuffle() {
         const n = this.getCards().length;
         for (let i = n - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -51,13 +51,8 @@ export class Deck {
         }
     }
 
-    // デッキをリセットする
-    resetDeck(gameType: string) {
-        this.createCards(gameType);
-    }
-
     // カードを一枚引く
-    drawOne(): string {
+    public drawOne(): string {
         return String(this.cards.shift());
     }
 }
