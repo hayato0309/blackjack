@@ -17,7 +17,7 @@ export class Player {
         this.chips = chips;
         this.hand = [];
         this.playerStatus = playerStatus; // betting, readyForActing, doneWithActing, bust, broke
-        this.gameDecision = <GameDecision>{};
+        this.gameDecision = new GameDecision("", 0);
     }
 
     // setter

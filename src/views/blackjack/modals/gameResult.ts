@@ -7,8 +7,8 @@ export class GameResultModal {
     static createGameResultModal(resultLog: GameResultElement[], chips: number): HTMLDivElement {
 
         const numOfRounds: number = resultLog.length;
-        let chipsDelta: number = chips - INITIAL_CHIPS;
-        let plusMinusSymbol: string = chipsDelta >= 0 ? "+" : "-";
+        const chipsDelta: number = chips - INITIAL_CHIPS;
+        const plusMinusSymbol: string = chipsDelta >= 0 ? "+" : "-";
 
         const gameResultModal = document.createElement("div");
         gameResultModal.innerHTML = `
@@ -47,7 +47,7 @@ export class GameResultModal {
         for (let i = 0; i < resultLog.length; i++) {
             const hand = resultLog[i]["hand"];
             const winOrLose = resultLog[i]["winOrLose"];
-            const devidend = resultLog[i]["devidend"];
+            const earnings = resultLog[i]["earnings"];
 
             let handWithSymbol: string[] = [];
             hand.map(card => {
@@ -59,7 +59,7 @@ export class GameResultModal {
                 <td class="text-center py-4 w-2/12">${i + 1}</td>
                 <td class="text-center py-4 w-4/12">${handWithSymbol}</td>
                 <td class="text-center py-4 w-3/12">${winOrLose}</td>
-                <td class="text-center py-4 w-3/12">$${devidend}</td>
+                <td class="text-center py-4 w-3/12">$${earnings}</td>
             </tr>`
         }
     }

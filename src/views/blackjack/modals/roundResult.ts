@@ -4,7 +4,7 @@ import type { Table } from "../../../models/Table";
 export interface RoundResultElement {
     name: string,
     winOrLose: string,
-    devidend: number
+    earnings: number
 }
 
 export class RoundResultModal {
@@ -27,17 +27,17 @@ export class RoundResultModal {
                             <tr class="flex w-full border-b">
                                 <td class="text-center py-4 w-4/12">${roundResult[0]["name"]}</td>
                                 <td class="text-center py-4 w-4/12">${roundResult[0]["winOrLose"]}</td>
-                                <td class="text-center py-4 w-4/12">$${roundResult[0]["devidend"]}</td>
+                                <td class="text-center py-4 w-4/12">$${roundResult[0]["earnings"]}</td>
                             </tr>
                             <tr class="flex w-full border-b">
                                 <td class="text-center py-4 w-4/12">${roundResult[1]["name"]}</td>
                                 <td class="text-center py-4 w-4/12">${roundResult[1]["winOrLose"]}</td>
-                                <td class="text-center py-4 w-4/12">$${roundResult[1]["devidend"]}</td>
+                                <td class="text-center py-4 w-4/12">$${roundResult[1]["earnings"]}</td>
                             </tr>
                             <tr class="flex w-full border-b">
                                 <td class="text-center py-4 w-4/12">${roundResult[2]["name"]}</td>
                                 <td class="text-center py-4 w-4/12">${roundResult[2]["winOrLose"]}</td>
-                                <td class="text-center py-4 w-4/12">$${roundResult[2]["devidend"]}</td>
+                                <td class="text-center py-4 w-4/12">$${roundResult[2]["earnings"]}</td>
                             </tr>
                         </tbody>
                     </table>
